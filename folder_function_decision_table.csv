@@ -1,0 +1,9 @@
+variable,catchments,primary_read,alternative_prim_read,alternative_prim_read2
+level,V1V2,isco,stevens,hobou20
+level,V3V4,isco,hobou20,stevens
+weather,NA,weather,NA,NA 
+rain,NA,weather,hobo_rain,NA
+flow,V1V2,isco,stevens,hobou20
+flow,V3V4,isco,hobou20,stevens
+temperature,NA ,weather,hobo_rain,NA
+groundwater level,,read_well,NA,NA
