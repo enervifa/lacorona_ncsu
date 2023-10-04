@@ -4,6 +4,9 @@
 | Rain/Automatic rain gauges and Manual Rain gauges (R2,R3,R4,R5,R6,RV1) | R1061523.csv, R7061523.csv, EM061523.csv, Precipitaciones La Corona 2023.xls | 1_quickcheck_rain.R |
 | Weather/Weather Station                                          | EM061523.dat                                            | 1_quickcheck_weather.R  |
 | Flume/Hobou20                                                    | S1061523.csv, S2061523.csv, v3p111219.csv, V4p111219.csv | quickcheckflumes.R      |
+| Flume/StevensU12                                                 | V4111219.csv | quickcheckflumes.R      |
+| Flume/ISCO                                              | v3110119csv.csv | quickcheckflumes.R      |
+| Flume/ISCOvel                                           |  V3111219VEL.csv, v3110119vel.csv| quickcheckflumes.R      |
 
 
 
