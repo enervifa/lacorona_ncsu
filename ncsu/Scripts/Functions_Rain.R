@@ -22,7 +22,7 @@ read_user_input <- function() {
     # use dirname
     user_file_paths <- append(user_file_paths, dirname(file))
   }  
-    return(list(names = user_file_names, paths = user_file_paths))
+    return(list(names = list_c(user_file_names), paths = list_c(user_file_paths)))
 }
 
 # read automatically list of files
@@ -32,13 +32,14 @@ read_list_files <- function(file_path, file_ext = ".csv") {
   user_file_list <- dir(file_path, pattern = file_ext)
   user_path <- file_path
   # return same structure as read_user_input
-  return(list(names = list(user_file_list), 
-              paths = list(rep(user_path, length(user_file_list)))))
+  return(list(names = user_file_list, 
+              paths = rep(user_path, length(user_file_list))))
 }
 
 # read data file function
 read_data_file <- function(name, file_path, select_col = 2:4) {
   #read in file
+  #browser()
   data <- read_csv(paste(file_path,name,sep="/"), col_names = FALSE, skip=2) %>%
     select(all_of(select_col))
 
@@ -59,14 +60,15 @@ read_data_file <- function(name, file_path, select_col = 2:4) {
 }
 
 # write otip file
-write_otip_file <- function(name, df, input = input) {
+write_otip_file <- function(name, df, input = input, output_path) {
   # Define the output file path and name tag
-  file_path <- input$paths[[which(input$names==name)]]
+  #browser()
+  file_path <- input$paths[[1]][[which(input$names[[1]]==name)]]
   #output_path <- paste0(file_path,"/","OTIP_", name)
   output_file <- paste0("OTIP_", name)
-  #  browser()
+    #browser()
   # Save the processed data to a csv file
-  write_csv(df, file = paste0(file_path,"/",output_file), quote = none)
+  write_csv(df, file = paste0(file_path,"/", output_path, "/", output_file), quote = "none")
   return(list(path = file_path, file = output_file))
   
 }
@@ -92,7 +94,7 @@ diff_data <- function(data) {
 
 
   
-process_rain_data <- function(file_path){
+process_rain_data <- function(file_path, output_path_add = "processed"){
   
   # step 1
   input <- read_user_input()
@@ -118,10 +120,9 @@ process_rain_data <- function(file_path){
     # ###CHECK LIST
     # user_file_names
     # user_file_paths
-    
+    #browser()
     # Loop through each .csv file
     for (name in input$names[[1]]) {
-      file_path <- input$paths[[which(input$names[[1]]==name)]]
       data_process <- read_data_file(name, file_path)
       # # Read the .csv file
       # data <- read.csv(name, header = FALSE, sep = ",",skip=2)%>%
@@ -147,20 +148,20 @@ process_rain_data <- function(file_path){
       data_process1 <- diff_data(data_process)
       
       # write to otip file
-      out <- write_otip_file(name, data_process1)
-      cat("Processed file:", out$file, "Saved output to:", out$path, "\n")
+      out <- write_otip_file(name, data_process1, input = input, output_path_add)
+      cat("Processed file:", out$file, "Saved output to:", paste(out$path, output_path_add, sep = "/" ), "\n")
     }
 }
 #this fucntion now works only with Date Time format to outpit OTIP tag files 
 #this files contain the individual tips
 
 # second version of the above function that automatically runs through all files
-process_rain_data_auto <- function(file_path){
+process_rain_data_auto <- function(file_path, output_path_add = "processed"){
   #browser()
   # step 1
   input <- read_list_files(file_path)
   # input is a list
-
+ # browser()
   # Loop through each .csv file
   for (name in input$names[[1]]) {
     
@@ -170,8 +171,8 @@ process_rain_data_auto <- function(file_path){
     data_process1 <- diff_data(data_process)
     
     # write to otip file
-    out <- write_otip_file(name, data_process1, input = input)
-    cat("Processed file:", out$file, "Saved output to:", out$path, "\n")
+    out <- write_otip_file(name, data_process1, input = input, output_path_add)
+    cat("Processed file:", out$file, "Saved output to:", paste(out$path, output_path_add,sep="/"), "\n")
   }
 }
 
