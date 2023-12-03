@@ -16,7 +16,7 @@ This document specifically focuses on the analysis of the rainfall data
 
 To be able to run this notebook, the following R packages should be available
 
-```{r}
+```{r message = FALSE}
 library(tidyverse)
 library(plotly)
 library(readxl)
@@ -74,11 +74,36 @@ test_files <- process_rain_data_auto(file_path = file_path_in[1], output_path_ad
 
 This tests the version that asks for user input (the file name) before processing.
 
-**First delete the files in the "processed" folder**
-
 ```{r manualVersion}
 
 file_path_in <- "../Rain"
 
 test_manual <- process_rain_data(file_path_in)
+```
+
+```         
+ "EM061523.csv" "R1061523.csv" "R7061523.csv"
+```
+
+## Quick check plot
+
+The next step is to make a plot to check the data. Use the function `quick_check_plot`. The function has two arguments. The first argument points to the path where the processed files are stored. The second argument `file_numbers`, can be "all", meaning, plot all files in the folder, or can be a number or sequene of numbers, meaning the ordered number of the file in the folder (stored alphabetically and numerical sorted).
+
+First create a list with all the processed data files using `create_data_list`
+
+```{r createdatalist}
+data_processed <- create_data_list(path_to_processed = "../Rain/processed")
+```
+
+We can now make the plots, first plot 1
+
+```{r makeplot1}
+check_plot(data_processed)
+
+```
+
+and plot 2
+
+```{r makeplot2}
+check_plot(data_processed, plot = 2)
 ```

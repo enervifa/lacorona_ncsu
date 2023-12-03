@@ -65,7 +65,7 @@ read_data_file <- function(name, file_path, select_col = 2:4) {
 write_otip_file <- function(name, df, input = input, output_path) {
   # Define the output file path and name tag
   #browser()
-  file_path <- input$paths[[which(input$names==name)]]
+  file_path <- input$paths[[1]][[which(input$names[[1]]==name)]]
   #output_path <- paste0(file_path,"/","OTIP_", name)
   output_file <- paste0("OTIP_", name)
     #browser()
@@ -77,13 +77,11 @@ write_otip_file <- function(name, df, input = input, output_path) {
 
 
 # read otip file
-read_otip_file <- function(name, path_to_file){
-  data_out <- read_csv(paste0(path_to_file,"/",name))
+read_otip_file <- function(name){
+  data_out <- read_csv(name)
   # make sure dates are working
   data_out <- data_out %>%
-    mutate(date = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
-    # rename Difference to Event
-    rename("Event" = "Difference")
+    mutate(date = mdy_hms(Date, tz = "America/Argentina/Buenos_Aires"))
   return(data_out)
 }
 
@@ -95,63 +93,6 @@ diff_data <- function(data) {
     select(Date, Difference)
   return(data1)
 }
-
-###############################################
-###############################################
-#'first plotting function
-#'
-#'@param df a data frame/tibble as input
-#'@param ggtitle_text character, the text for the plot title
-#'
-#'@return a plotly object
-#'
-#'@examples 
-#'NA
-#'
-#'@export
-
-first_quick_plot <- function(df, ggtitle_text) {
-# Create the first scatter plot
-  quickplot_rain <- ggplot(df, aes(x = date, y = CumRainmm, color = filename)) +
-    geom_point(size = 2) +
-  # geom_line(size = 0.5)+
-    labs(x = "Date", y = "Cumulative Rain in mm") +
-    ggtitle(ggtitle_text) +
-    theme_minimal() +
-    theme_light() +  
-    theme(legend.position = "top")
-
-  return(p1<-ggplotly(quickplot_rain))
-}
-
-###############################################
-###############################################
-#'second plotting function
-#'
-#'@param df a data frame/tibble as input
-#'@param ggtitle_text character, the text for the plot title
-#'
-#'@return a plotly object
-#'
-#'@examples 
-#'NA
-#'
-#'@export
-second_quick_plot  <- function(df, ggtitle_text) {
-  # Create the plot
-  quickplot_rain2 <- ggplot(df, aes(x = date, y = CumRainmm, color = filename, group = filename)) +
-    geom_col(width = 0.5) +
-    labs(x = "Date", y = "Cumulative Rain in mm") +
-    ggtitle(ggtitle_text) +
-    theme_minimal() +
-    theme_light() +  # Use a minimal theme
-    theme(legend.position = "top")
-
-  # Convert the plot to a Plotly object 
-  return(p2 <- ggplotly(quickplot_rain2))
-
-}
-
 
 
   
@@ -223,7 +164,7 @@ process_rain_data_auto <- function(file_path, output_path_add = "processed"){
   # step 1
   input <- read_list_files(file_path)
   # input is a list
-  #browser()
+  browser()
   # Loop through each .csv file
   for (name in input$names) {
     
@@ -244,21 +185,49 @@ process_rain_data_auto <- function(file_path, output_path_add = "processed"){
 #######################NOW QUICK CHECK PLOT###############################
 ####### read the OIT files and calculate rain in mm, do a quick check plot
 
-create_data_list <- function(path_to_processed, file_numbers = "all"){
-  #write empty list to store the files 
+quick_check_plot <- function(file_path){
+  #write enpty list to storage the files 
   data2_list<-list()
-  #browser()
-  input <- read_list_files(path_to_processed)
-  # input is a list
+  # Specify the file path
+  #file_path <- "C:/Users/Lenovo/Downloads/SampleFiles3"
+  setwd(file_path) # needed?
   
-  # if file_numbers is a number or series of numbers
-  if (file_numbers != "all") {
-    input_names <- input$names[file_numbers]
-  } else input_names <-  input$names
+  # read user input
+  input <- read_user_input()
+  # # Create empty lists to store user-provided file names and paths
+  # user_file_names <- list()
+  # user_file_paths <- list()
+  # 
+  # # Prompt the user for file names until they press Enter
+  # while (TRUE) {
+  #   # Prompt the user for a file name
+  #   file <- readline("Enter a file name (or press Enter to finish): ")
+  #   
+  #   # Check if the user pressed Enter (i.e., entered an empty string)
+  #   if (file == "") {
+  #     break  # Exit the loop if the user pressed Enter
+  #   }
+  #   # Add the user-provided file name to the user_file_names list
+  #   user_file_names <- append(user_file_names, list(file))
+  #   
+  #   # Add the corresponding file path to the user_file_paths list
+  #   user_file_paths <- append(user_file_paths, list(file.path(file_path, file)))
+    
   # Loop through each .csv file
-  for (name in input_names) {
+  for (name in user_file_names) {
       # Read the .csv file
-      data <- read_otip_file(name, path_to_processed)
+      data <- read_otip_file(name)
+      #options(warn = -1)
+      # Specify the column positions to read in OTIP files 
+      #col_positions <- fwf_widths(c(20, Inf))   ##OTIP file format
+      # Read the file
+      #data <- suppressMessages(read_fwf(user_file_paths, col_positions = col_positions))
+      #Rename columns
+      #colnames(data) <- c("Date", "Event") 
+      
+      # data1<-data%>%
+      #   mutate(date = mdy_hms(Date, tz = "America/Argentina/Buenos_Aires"))
+      # #  browser()
       # Check if "R1" or "R7" is in the file name at specific positions (e.g., at the beginning)
       #file_name <- basename(user_file_paths)
       if (grepl("R1|R7", name)){
@@ -276,33 +245,95 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
           select(date,CumRainmm)# Default transformation for other cases
         
       }
-      #browser()
+      
       # add the user_file_name to the list
       data2 <- data2 %>%
         mutate(filename = name)
       # Add data2 to the list
-      data2_list[[name]] <- data2
-      cat("Processed file:", path_to_processed, "\n")
-  }
+      data2_list[[length(data2_list) + 1]] <- data2
+      cat("Processed file:", file_path, "\n")
+    
     return(data2_list)
+  }
 }
 
-## Plot the data
-check_plot <- function(data_list, plot = 1) {
+## Quick check with manual data
+quick_check_manual <- function(data_list) {
   
   # collapse the list
   result_df <- bind_rows(data_list)
-  #browser()
+  
+  # #merge dataset of three pluviometers
+  # # dates times across all data frames in data2_list. 
+  # # Extract and stack the "Date" column from each data frame in data2_list
+  # 
+  # result_df <- bind_rows(data_list) %>%
+  #   select(date) %>%
+  #   arrange(date) %>%
+  #   summarise(dates = unique(date))
+  # 
+  # # Loop through each element in data2_list
+  # for (i in 1:length(data_list)) {
+  #   # Left join the current data frame with the result data frame using JulianDate
+  #   # Get the corresponding file name
+  #   result_df <- left_join(result_df, data_list[[i]], by = c("date"), keep=FALSE)
+  # }
+  # 
+  # #create a evctor with colnames
+  # col_names<-c()
+  # for (i in 1:length(user_file_names)) {
+  #   # Get the current column name
+  #   
+  #   file_name <- user_file_names[i]
+  #   
+  #   # Append the file name to the corresponding column name
+  #   col_names[i] <- paste0(file_name,col_names[i])
+  # }
+  # col_names_final<-c("Date",col_names)
+  # 
+  # colnames(result_df)<-col_names_final
+  
+  # result_df_mm <-result_df %>%
+  #   mutate(date = mdy_hms("Date", tz = "America/Argentina/Buenos_Aires"))
+  
   
   # Create a title with the download data date
-  filename1 <- result_df$filename[1]
-  file_date <- substr(filename1, 8, nchar(filename1))
+  file_date <- substr(result_df$filename[1], 3, nchar(file_name))
   ggtitle_text <- paste("Rain Data Quick Check (File Number:", file_date, ")")
   
-  if (plot == 1) { # default
-    (plot1 <- first_quick_plot(result_df, ggtitle_text))
-  } else (plot2 <- second_quick_plot(result_df, ggtitle_text))
-
   
-
+  # Reshape the data into long format
+  #result_df_long <- pivot_longer(result_df, cols = -Date, names_to = "Variable", values_to = "Value")
+  
+  # Create the first scatter plot
+  quickplot_rain <- ggplot(result_df, aes(x = Date, y = CumRainmm, color = filename)) +
+    geom_point(size = 2) +
+    # geom_line(size = 0.5)+
+    labs(x = "Date", y = "Cumulative Rain in mm") +
+    ggtitle(ggtitle_text[1]) +
+    theme_minimal() +
+    theme_light() +  
+    theme(legend.position = "top")
+  
+  p1<-ggplotly(quickplot_rain)
+  
+  # Create the plot
+  quickplot_rain2 <- ggplot(result_df, aes(x = Date, y = CumRainmm, color = filename, group = filename)) +
+    geom_col(width = 0.5) +
+    labs(x = "Date", y = "Cumulative Rain in mm") +
+    ggtitle(ggtitle_text[1]) +
+    theme_minimal() +
+    theme_light() +  # Use a minimal theme
+    theme(legend.position = "top")
+  
+  # # Format the date axis with one-hour intervals and specify the date format
+  # quickplot_rain2 <- quickplot_rain2 +
+  #   scale_x_datetime(
+  #     date_breaks = "1 day",              # Set the breaks to display at one-hour intervals
+  #     date_labels = "%Y-%m-%d %H:%M:%S"  # Desired date format
+  #   )
+  
+  # Convert the plot to a Plotly object
+  p2 <- ggplotly(quickplot_rain2)
+  
 }
