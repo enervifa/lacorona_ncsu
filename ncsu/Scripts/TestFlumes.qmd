@@ -1,0 +1,32 @@
+---
+title: "Testing Flume pipeline scripts La Corona"
+format: html
+editor: visual
+---
+
+## Introduction
+
+This notebook demonstrates the different functions that have been developed to analyse and check the field data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
+
+Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
+
+This document specifically focuses on the analysis of the streamflow data
+
+## packages
+
+To be able to run this notebook, the following R packages should be available
+
+```{r message = FALSE}
+library(tidyverse) 
+library(plotly) 
+library(readxl) 
+library(htmlwidgets)
+```
+
+## Loading the developed functions
+
+The functions are stored in the scripts folder, the same folder as the code version of this file (the \*.qmd file).
+
+```{r loadfunctions}
+source("Functions_Flumes.R") 
+```

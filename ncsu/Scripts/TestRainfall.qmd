@@ -6,7 +6,7 @@ editor: visual
 
 ## Introduction
 
-This notebook demonstrates the different functions that have been developed to analyse and check the field data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
+This notebook demonstrates the different functions that have been developed to analyse and check the rainfall data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
 
 Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
 

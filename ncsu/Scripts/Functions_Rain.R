@@ -1,5 +1,6 @@
 # process rain data
 # 14/11/2023 NOT YET TESTED
+# 03/12/2023 All tested and working, see TestRainfall.qmd
 
 # read user input
 read_user_input <- function(in_path) {
