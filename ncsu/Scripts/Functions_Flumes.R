@@ -50,8 +50,6 @@ extract_pre_fix <- function(file_name) {
 }
 
 
-
-
 #################FRIST FUNCTION#############################
 #########################################
 #' This function reads in the file names from manual user input
