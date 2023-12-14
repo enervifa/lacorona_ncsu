@@ -1,38 +1,59 @@
 # Process flumes data
+# not tested
 
+require(tidyverse)
+
+
+
+# Look at the table in github
+  # | Data/Instrument                                                  | Extension/Filenames                                                | Scripts to Process      |
+  # |-----------------------------------------------------------------|---------------------------------------------------------|-------------------------|
+  # | Rain/Automatic rain gauges (R1,R7,EM)                           | .hobo/ R1061523.csv, R7061523.csv, EM061523.csv               | 1_quickcheck_rain.R, 2_cumrain.R |
+  # | Rain/Automatic rain gauges and Manual Rain gauges (R2,R3,R4,R5,R6,RV1) | .hobo /R1061523.csv, R7061523.csv, EM061523.csv, .xlsx/Precipitaciones La Corona 2023.xls | 1_quickcheck_rain.R |
+  # | Weather/Weather Station                                          | .dat/EM061523.dat                                            | 1_quickcheck_weather.R  |
+  # | Flume/Hobou20                                                    |.hobo/  S1061523.csv, S2061523.csv, v3p111219.csv, V4p111219.csv | quickcheckflumes.R      |
+  # | Flume/StevensU12                                                 | .hobo/ V4111219.csv | quickcheckflumes.R      |
+  # | Flume/ISCO                                                       | .csv/ v3110119csv.csv  V1052523.csv | quickcheckflumes.R      |
+  # | Flume/ISCOvel                                                    | .csv/  V3111219VEL.csv, v3110119vel.csv| quickcheckflumes.R      |
+  
 
 #######  FIRST FUNCTION RUN
 #file_path is the directory of Process file
 
 #First function to run
-process_flume_data (file_path = "C:/Users/Lenovo/Downloads/SampleFiles3")
+#process_flume_data (file_path = "C:/Users/Lenovo/Downloads/SampleFiles3")
 #Second function to run
-quick_check_plot (file_path = "C:/Users/Lenovo/Downloads/SampleFiles3")
+#quick_check_plot (file_path = "C:/Users/Lenovo/Downloads/SampleFiles3")
 #OTIP_EM061523.csv
 #precipitacionescorona2023
 
 ##########################################################
+#' Extract the date from a file name
+#' 
 #' function to extract date from the filename
 #' This function only works for the current known filename constructs
 #' will need to be checked if construct of file names changes
 #' @param file_name character string, name of the file
+#' @param split regular expression (regex()) to locate date
 #' @example
 #'  date <- extract_date("v3p110119.csv")
 #'  date
+#'  date2 <- extract_date("S1110119.csv")
+#'  date2
 #' 
 #' @export
-extract_date <- function(file_name) {
-  split_result <- na.omit(as.numeric(str_split(file_name,"[a-z]", simplify = T)))
-   if (length(split_result) > 1) {
-     raw_result <- split_result[2]
-   } else raw_result <- split_result
+extract_date <- function(file_name, split = regex("(\\d+)(?!.*\\d)")) {
+  locations <- str_locate(file_name, split)
+  split_result <- str_sub(file_name, locations[2]-5, locations[2])
    # convert to date
-   date <- mdy(as.numeric(split_result))
+   date <- mdy(split_result)
    # return both
-   return(list(date,raw_result))
+   return(list(date,split_result))
 }
 
 ##########################################################
+#' Extract the prefix from a file name
+#' 
 #' function to extract the prefix from the filename
 #' This function only works for the current known filename constructs
 #' will need to be checked if construct of file names changes
@@ -44,83 +65,383 @@ extract_date <- function(file_name) {
 #' 
 #' @export
 extract_pre_fix <- function(file_name) {
-  date_string <- extract_date(file_name)$raw_result
+  #browser()
+  date_string <- extract_date(file_name)[[2]]
+  #browser()
   split_result <- str_split(file_name, as.character(date_string), simplify = T)
   return(split_result[1])
 }
 
+##########################################################
+#' Identify an instrument
+#' 
+#' function to identify the instrument tyoe from the filename
+#' This function only works for the current known filename constructs
+#' will need to be checked if construct of file names changes
+#' @param file_name character string, name of the file
+#' 
+#' @example
+#' test_instrument <- identify_instrument("v31101199.csv")
+#' test_instrument
+#' 
+#' @export
+identify_instrument <- function(file_name) {
+  prefix <- extract_pre_fix(file_name)
+  vel_trigger <- ifelse(grepl("vel",file_name, ignore.case = T) == T,
+                        TRUE, FALSE)
+  instrument <- ifelse(vel_trigger == T, "ISCO", 
+                       ifelse((grepl("p", prefix) == T |
+                                grepl("S", prefix) == T), "HOBOU20", "StevensU12"))
+  return(instrument)
+}
 
-#################FRIST FUNCTION#############################
+
+
 #########################################
+#' read manual user input
+#' 
 #' This function reads in the file names from manual user input
 #' 
 #' @param file_path a character string giving the path for the files
 #'
 #' @export
-process_flume_data <- function(file_path){
+read_flume_files <- function(file_path, manual = T){
   # Create empty lists to store user-provided file names and paths
   user_file_names <- list()
   user_file_paths  <- list()
   file_prefix <- list()
   file_date <- list()
+  instrument <- list()
   # Prompt the user for file names until they press Enter
   while (TRUE) {
     # Prompt the user for a file name
     file <- readline("Enter a file name (or press Enter to finish): ")
-      # Check if the user pressed Enter (i.e., entered an empty string)
+    # Check if the user pressed Enter (i.e., entered an empty string)
     if (file == "") {
       break  # Exit the loop if the user pressed Enter
-  }
-  
-  # Add the user-provided file name to the user_file_names list
-  user_file_names <- append(user_file_names, file)
-  # Add the corresponding file path to the user_file_paths list
-  # use in_path from input if dirname not specified in the input
-  if (dirname(file) == ".") {
-    user_file_paths <- append(user_file_paths, in_path)
-  } else user_file_paths <- append(user_file_paths, dirname(file))
-  
-  # Extract the file prefix first two letters
-  file_prefix <- append(file_prefix, extract_prefix(file))
-  file_date <- append(file_date, extract_date(file))
-  }
-  # create an export list
-  user_file_data <- list(names = user_file_names , paths = user_file_paths, prefix = file_prefix, 
-                         date = file_date)
-  
-
-   # Return the list of file data
-   return(user_file_data)
-}
-
-##########Analyse the instrument to analyse .csv
-# matches the target prefix
-  if (file_prefix == target_prefix) {
-    # Perform your processing and produce output here
+    }
+    
+    # Add the user-provided file name to the user_file_names list
+    user_file_names <- append(user_file_names, file)
+    # Add the corresponding file path to the user_file_paths list
+    # use in_path from input if dirname not specified in the input
+    if (dirname(file) == ".") {
+      user_file_paths <- append(user_file_paths, file_path)
+    } else user_file_paths <- append(user_file_paths, dirname(file))
+    
+    # Extract the file prefix, date and instrument
+    file_prefix <- append(file_prefix, extract_pre_fix(file))
+    file_date <- append(file_date, extract_date(file))
+    instrument <- append(instrument, identify_instrument(file))
+    
+    # inform the user
     cat("Processing file:", file, "\n")
-    # Example: read and print the contents of the file
-    # data <- read.table(file, header = TRUE)
-    # print(data)
+    
   }
+  #browser()
+  # create an export list
+  user_file_data <- list(names = list_c(user_file_names) , 
+                         paths = list_c(user_file_paths), 
+                         prefix = list_c(file_prefix), 
+                         date = file_date[[1]], 
+                         instrument = list_c(instrument))
+  
+  
+  # Return the list of file data
+  return(user_file_data)
 }
 
-# Return any results or summaries you want
-# For example, you can return a summary or a list of processed data
-# return(processed_data)
-}
+#########################################
+#' read automatic list of files
+#' 
+#' This function automatically read list of files names from a directory
+#' 
+#' @param file_path a character string giving the path for the files
+#' @param file_ext a character string giving the extension of the files
+#'
+#' @export
 
-# Call the function to process files starting with "S1"
-results_S1 <- process_files(target_prefix = "S1")
-
-  # --- HOBOU20 ---- S2111219.csv
+read_list_flume <- function(file_path, file_ext = ".csv") {
+  # this works if all files are in the same directory
+  #browser()
+  user_file_list <- dir(file_path, pattern = file_ext)
+  user_path <- file_path
+  # Extract the file prefix, date and instrument
+  file_prefix <- map_chr(user_file_list, 
+                        extract_pre_fix)
+  file_date <- list_c(lapply(map(user_file_list, extract_date),'[[',1))
+  #browser()
+  instrument <- map_chr(user_file_list, identify_instrument)
   
 
+  # return same structure as read_user_input
+  return(list(names = user_file_list, 
+              paths = rep(user_path, length(user_file_list)),
+              prefix = file_prefix,
+              date = file_date,
+              instrument = instrument))
+}
 
-# Loop through each .csv file
-for (user_file_paths in user_file_names) {
-  # Read the .csv file
-  data <- read.csv(user_file_paths, header = FALSE, sep = ",",skip=2)%>%
-    select(2:4,)
+
+############FIRST FUNCTION PROCESS DATA####################
+
+# #If you are not in a folder with all files to be processed e.g Flumes/Hobo20
+# # You can use process_flume_data to define a function to collect user input for file names
+# #instruments Hobo20, StevensU12
+# process_flume_data <- function(file_path) {
+#   # Create empty lists to store user-provided file data
+#   user_file_data <- list()
+#   
+#   # Prompt the user for file names until they press Enter
+#   while (TRUE) {
+#     # Prompt the user for a file name
+#     catchment <- readline("Enter catchment name V1, V2, V3 or V4 (or press Enter to finish): ")
+#     instrument <- readline("Enter a instrument name (or press Enter to finish): ")
+#     file <- readline("Enter a file name (or press Enter to finish): ")
+#     # Check if the user pressed Enter (i.e., entered an empty string)
+#     if (instrument == "" ) {
+#       break  # Exit the loop if the user pressed Enter
+#     }
+#     
+#     # Construct the full file path
+#     full_file_path <- file.path(file_path, file)
+#     
+#     # # Extract the file prefix first two letters
+#     # file_prefix <- substr(file, 1, 2)
+#     file_date <- substr(file, 3, 8)
+#     
+#     # Add the file data to the user_file_data list
+#     user_file_data <- append(user_file_data, list(list(ins = instrument,
+#                                                        file_name = file,
+#                                                        # prefix = file_prefix,
+#                                                        date = file_date,
+#                                                        full_path = full_file_path,
+#                                                        which_catch = catchment)))
+#   }
+#   
+#   # Return the list of file data
+#   return(user_file_data)
+# }
+
+
+
+
+
+################ SECOND function to process files and save individual plots############
+
+######################################################################################
+#' process list of files and save output
+#' 
+#' This is the "second" function to process the files in the directory
+#' generate the test plots and save the plots
+#' 
+#' @param file_info a list of file  information
+#' @param output_dir path to store the output data frames and plots
+#' 
+#' test_info <- read_file_manual("../flumes")
+#' input: "S1110119.csv", followed by 'enter'
+#' process_file_list(test_info, "../flumes/processed)
+#' 
+#' @export
+process_file_list <- function(file_info, out_path) {
+  
+  output_list <- list()
+  
+  for(i in 1:length(file_info$names)) {
+    output_list[[i]] <- file_process(file_info$names[i],file_info$paths[i], 
+                                     file_info$instrument[i], output_dir = out_path)
+    
+  }
+
+  return(output_list)
+}
+
+
+##################################
+#' file process function
+#' 
+#' @param  file_name name of the file to process
+#' @param  file_path path of the file to process
+#' @param instrument instrument type
+#' 
+#' @export
+file_process <- function(file_name, file_path, instrument, output_dir) {
+
+      if (instrument == "HOBOU20") {
+        # Process and plot files from HOBO20 in V1V2, and "v3p"," V4p" from V3V4
+        #browser()
+        data_df <- read_hobou20(filename = file_name, input_dir = file_path ,plotit = T,
+                                outdir = output_dir) 
+      } else {
+        if (instrument == "StevensU12")  {
+          #browser()
+          prefix <- extract_pre_fix(file_name)
+          data_df <- read_stevens(file_name, prefix, file_path, plotit = T)
+        } else {
+          data_df <- read_isco(file_name, file_path, plotit = T)
+          
+        }
+      }
+
+      return(data_df)
+}
+
+# 
+# # Create the output directory if it doesn't exist
+# dir.create(output_dir, showWarnings = FALSE)
+
+
+
+# --- HOBOU20 ----
+################
+#' read in the Hobou20 file output
+#' 
+#' @param filename
+#' @param input_dir
+#' @param coltypes what columntypes should be read in,
+#'   defaults to cols("d","c","d","d","d","d","c","c","c","c")
+#' @param skip how many rows to skip defaults to 1
+#' @param plotit logical switch whether to plot the result
+#' @param outdir where to store the output (plot)
+#' 
+#' @export
+read_hobou20 <- function(filename, input_dir ,
+                         coltypes = cols("d","c","d","d","d","d","c","c","c","c"),
+                         skip = 1, plotit = F, outdir = output_dir) {
+  #browser()
+  file_read <- read_csv(paste(input_dir,filename,sep="/"),
+                        skip = skip, col_types = coltypes)
+  file_read <- file_read %>%
+    mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
+                                      tz = "America/Argentina/Buenos_Aires")) 
+  colnames(file_read)[3:6] <- c("Abs Pressure kPa", "Temp, ?C",
+                                "Bar Pressure kPa",
+                                "Water Level, meters")
+  ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
+  
+  file_out <- file_read %>%
+    select(`Date and Time`, `Temp, ?C`,
+           `Water Level, meters`)
+  
+  if (plotit == T) {
+    p <- file_out %>%
+      na.omit() %>%
+      pivot_longer(cols = `Temp, ?C`:`Water Level, meters`,
+                   names_to = "Measures", values_to ="values") %>%
+      ggplot(aes(`Date and Time`,values, colour = Measures)) +
+      geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")+
+      ggtitle(ggtitle_text) + theme_classic()
+    print(p)
+    #browser()
+    ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+
+  }
+  return(file_out %>% select(`Date and Time`,
+                             `Water Level, meters`))
+  
+}
+
+# --- HOBOU12--- Stevens
+
+# read the stevens logger
+read_stevens <- function(filename, file_prefix, input_dir,
+                         skip = 1, plotit = F, outdir = output_dir) {
+  #browser()
+  # messy, but currently the only way I can do this
+  if(str_to_lower(file_prefix) == "v1") coltypes <- cols("d","c","d","d","c","c","c","c","c")
+  if(str_to_lower(file_prefix) == "v2") coltypes <- cols("d","c","d","d","c","c","c")
+  if(str_to_lower(file_prefix) == "v3") coltypes <- cols("d","c","d","c","c","c","c","c")
+  if(str_to_lower(file_prefix) == "v4") coltypes <- cols("d","c","d","c","c","c")
+  
+  #browser()
+  file_read <- read_csv(paste(input_dir,filename,sep="/"),
+                        skip = skip, col_types = coltypes)
+  browser()
+  file_read <- file_read %>%
+    mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
+                                      tz = "America/Argentina/Buenos_Aires")) 
+  colnames(file_read)[3] <- "Volt, V"
+  # if (grep("Temp, ?C", colnames(file_read)[4]) == T) {
+  #   colnames(file_read)[4] <- "Temp, ?C"
+  #   file_out <- file_read %>%
+  #     select(`Date and Time`, `Volt, V`,`Temp, ?C`)
+  # } else {
+  file_out <- file_read %>%
+    select(`Date and Time`, `Volt, V`)
+  
+  data_out <-   file_out  %>% 
+    mutate(`Water Level, meters` =
+             case_when(
+               file_prefix == "V1" ~ -0.03549 + 1.2*`Volt, V`,
+               file_prefix == "V2" ~ -0.666 + 1.2*`Volt, V`,
+               file_prefix == "V3" ~ 3.266 -1.28761*`Volt, V`,
+               file_prefix == "V4" ~ -0.65 + 1.2*`Volt, V`
+             )) %>%
+    select(`Date and Time`,`Water Level, meters`, logger)
+  return(data_out)
+  #  }
+  #browser()
+  if (plotit == T) {
+    p <-   data_out %>%
+      ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
+      theme_bw()
+    print(p)
+    ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+  }
+  return(file_out %>% select(`Date and Time`, `Water Level, meters`))
+}
+
+### read ISCO
+read_isco <- function(filename, input_dir , 
+                      coltypes = cols("c","i","i"),
+                      skip = 7, plotit = F, out_dir = output_dir) {
+  #browser()
+  file_read <- read_csv(paste(input_dir,filename,sep="/"),
+                        col_names =F,
+                        skip = skip, col_types = coltypes)
+  colnames(file_read) <- c("Date and Time", "Sample",
+                           "Level (ft)")
+  file_out <- file_read %>%
+    mutate(`Date and Time` = time_convert(`Date and Time`)) %>%
+    mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
+  
+  if (plotit == T) {
+    p <- file_out %>%
+      na.omit() %>%
+      pivot_longer(cols = `Sample`:`Level (ft)`,
+                   names_to = "Measures", values_to ="values") %>%
+      ggplot(aes(`Date and Time`,values, colour = Measures)) +
+      geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")
+    print(p)
+    png(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    print(p)
+    dev.off()
+  }
+  return(file_out %>% select(`Date and Time`,`Level (ft)`))
+}
+
+
+
+
+# shared with Functions_Rain.R
+
+#########################################
+#' Read data from a file
+#' 
+#' This function reads the data from the files in the file_list
+#' It converts the date column into real dates
+#' It select only the required columns
+#' 
+#' @param name name of a file to be read
+#' @param file_path a character string giving the path for the files
+#' @param select_col numbers of the columns to select
+#'
+#' @export
+read_data_file <- function(name, file_path, select_col = 2:4) {
+  #read in file
+  #browser()
+  data <- read_csv(paste(file_path,name,sep="/"), col_names = FALSE, skip=2) %>%
+    select(all_of(select_col))
   
   # Rename columns
   colnames(data) <- c("Date_Time", "Temp", "Event")
@@ -128,314 +449,75 @@ for (user_file_paths in user_file_names) {
   # Convert Date_Time to POSIXct format
   data <- data %>%
     mutate(Date = mdy_hms(Date_Time, tz = "America/Argentina/Buenos_Aires"))%>%
-    # Sort the data by 'Event' column and then by 'Date_Time'
-    arrange(Event, Date_Time)%>%
-  # Select 'Date_Time' and 'Event' columns and remove rows with NAs (no data)
-    select(Date_Time, Event) %>%
+    # Sort the data by 'Event' column and then by 'Date' (renamed Date_time column)
+    # do we want to keep Date or Date_Time?
+    arrange(Event, Date)%>%
+    # Select 'Date' and 'Event' columns and remove rows with NAs (no data)
+    select(Date, Event) %>%
     na.omit(data)
-#  browser()
-  data1 <-data%>%
-    mutate(Difference = ifelse(Event >= lag(Event, default = first(Event)), Event - lag(Event, default = first(Event)), 0))%>%
-    select(Date_Time, Difference)
-#  browser()
+  
+  return(data)
+}
+
+#########################################
+#' Write a data frame to a file for a specific input file
+#' 
+#' This function reads the data from the files in the file_list
+#' It converts the date column into real dates
+#' It select only the required columns
+#' 
+#' @param name name of the original file to be written
+#' @param df the final processed data frame
+#' @param input a list of file names and input paths, default given
+#' @param output_path optional output path
+#'
+#' @export
+# write otip file
+write_otip_file <- function(name, df, input = input, output_path = NULL) {
   # Define the output file path and name tag
-  output_path <- paste0(user_file_paths,"/","OTIP_", basename(user_file_paths))
-  output_file <- paste0("OTIP_", basename(user_file_paths))
-#  browser()
-  # Save the processed data to a file
-  write.table(data1, file = output_file, sep = "\t", col.names = FALSE, row.names = FALSE,quote = FALSE)
+  #browser()
+  file_path <- input$paths[[which(input$names==name)]]
+  #output_path <- paste0(file_path,"/","OTIP_", name)
+  output_file <- paste0("OTIP_", name)
+  #browser()
+  # Save the processed data to a csv file
+  if (!is.null(output_path)) {
+    write_csv(df, file = paste0(file_path,"/", output_path, "/", output_file), quote = "none")
+  } else write_csv(df, file = paste0(file_path,"/", output_file), quote = "none")
   
-  cat("Processed file:", basename(user_file_paths), "Saved output to:", output_file, "\n")
-}
-}
-}
-#this fucntion now works only with Date Time format to outpit OTIP tag files 
-#this files contain the individual tips
-
-###########################################################
-
-
-#################SECOND FUNCTION#############################
-#######################NOW QUICK CHECK PLOT###############################
-####### read the OIT files and calculate rain in mm, do a quick check plot
-
-quick_check_plot <- function(file_path){
-  #write enpty list to storage the files 
-  data2_list<-list()
-  # Specify the file path
-  file_path <- "C:/Users/Lenovo/Downloads/SampleFiles3"
-  setwd(file_path)
-  
-  # Create empty lists to store user-provided file names and paths
-  user_file_names <- list()
-  user_file_paths <- list()
-  
-  # Prompt the user for file names until they press Enter
-  while (TRUE) {
-    # Prompt the user for a file name
-    file <- readline("Enter a file name (or press Enter to finish): ")
-    
-    # Check if the user pressed Enter (i.e., entered an empty string)
-    if (file == "") {
-      break  # Exit the loop if the user pressed Enter
-    }
-    # Add the user-provided file name to the user_file_names list
-    user_file_names <- append(user_file_names, list(file))
-    
-    # Add the corresponding file path to the user_file_paths list
-    user_file_paths <- append(user_file_paths, list(file.path(file_path, file)))
-    
-  # Loop through each .csv file
-  for (user_file_paths in user_file_names) {
-    # Read the .csv file
-    options(warn = -1)
-    # Specify the column positions to read in OTIP files 
-    col_positions <- fwf_widths(c(20, Inf))   ##OTIP file format
-    # Read the file
-    data <- suppressMessages(read_fwf(user_file_paths, col_positions = col_positions))
-    #Rename columns
-    colnames(data) <- c("Date", "Event") 
-    
-    data1<-data%>%
-      mutate(date = mdy_hms(Date, tz = "America/Argentina/Buenos_Aires"))
-  #  browser()
-    # Check if "R1" or "R7" is in the file name at specific positions (e.g., at the beginning)
-    file_name <- basename(user_file_paths)
-        if (grepl("R1|R7", file_name)){
-        # Apply transformations based on file name
-        data2 <- data1 %>%
-          mutate(tipRainmm = Event * 0.254)%>%
-          mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(date,CumRainmm) # If "R1" or "R7" is in the file name
-        
-      } else {
-        # Default transformation
-        data2 <- data1 %>%
-          mutate(tipRainmm = Event * 0.1)%>%
-          mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(date,CumRainmm)# Default transformation for other cases
-        
-  }
-    }
-  
-  
-    # Add data2 to the list
-    data2_list[[length(data2_list) + 1]] <- data2
-    
-    cat("Processed file:", file_path, "\n")
-  }
-  ###################this now works with date and time
-  # ###check list
-  # head(data2_list[[1]]) 
-  # head(data2_list[[2]]) 
-  # head(data2_list[[3]]) 
-  
-  #################THIRD FUNCTION#############################
-  
-  #############NOW QUICK CHECK WITH MANUAL DATA
-  
-  #merge dataset of three pluviometers
-  # dates times across all data frames in data2_list. 
-  # Extract and stack the "Date" column from each data frame in data2_list
-  
-  stacked_df <- bind_rows(lapply(data2_list, function(df) select(df, date))) %>%
-    arrange(date)
-  
-  result_df <-unique(stacked_df)
-  
-  # Loop through each element in data2_list
-  for (i in 1:length(data2_list)) {
-    # Left join the current data frame with the result data frame using JulianDate
-    # Get the corresponding file name
-    result_df <- left_join(result_df, data2_list[[i]], by = c("date"), keep=FALSE)
-  }
-  
-  #create a evctor with colnames
-  col_names<-c()
-  for (i in 1:length(user_file_names)) {
-    # Get the current column name
-  
-    file_name <- user_file_names[i]
-    
-    # Append the file name to the corresponding column name
-    col_names[i] <- paste0(file_name,col_names[i])
-  }
-  col_names_final<-c("Date",col_names)
-  
-  colnames(result_df)<-col_names_final
-  
-  # result_df_mm <-result_df %>%
-  #   mutate(date = mdy_hms("Date", tz = "America/Argentina/Buenos_Aires"))
-  
-  
-  # Create a title with the download data date
-  file_date <- substr(user_file_names, 3, nchar(file_name))
-  ggtitle_text <- paste("Rain Data Quick Check (File Number:", file_date, ")")
-  
-  
-  # Reshape the data into long format
-  result_df_long <- pivot_longer(result_df, cols = -Date, names_to = "Variable", values_to = "Value")
-  
-  # Create the first scatter plot
-  quickplot_rain <- ggplot(result_df_long, aes(x = Date, y = Value, color = Variable)) +
-    geom_point(size = 2) +
-  # geom_line(size = 0.5)+
-    labs(x = "Date", y = "Cumulative Rain in mm") +
-    ggtitle(ggtitle_text[1]) +
-    theme_minimal() +
-    theme_light() +  
-    theme(legend.position = "top")
-  
-  p1<-ggplotly(quickplot_rain)
-  
-  # Create the plot
-  quickplot_rain2 <- ggplot(result_df_long, aes(x = Date, y = Value, color = Variable, group = Variable)) +
-    geom_col(width = 0.5) +
-    labs(x = "Date", y = "Cumulative Rain in mm") +
-    ggtitle(ggtitle_text[1]) +
-    theme_minimal() +
-    theme_light() +  # Use a minimal theme
-    theme(legend.position = "top")
-  
-  # # Format the date axis with one-hour intervals and specify the date format
-  # quickplot_rain2 <- quickplot_rain2 +
-  #   scale_x_datetime(
-  #     date_breaks = "1 day",              # Set the breaks to display at one-hour intervals
-  #     date_labels = "%Y-%m-%d %H:%M:%S"  # Desired date format
-  #   )
-  
-  # Convert the plot to a Plotly object
-  p2 <- ggplotly(quickplot_rain2)
-
-  
-p3<-subplot(p1,p2)
-print(p3)
-
-ggsave(quickplot_rain, filename = "quickcheck1.png", width = 8, height = 6, dpi = 300)
-ggsave(quickplot_rain2, filename = "quickcheck2.png",width = 8, height = 6, dpi = 300)
-cat("Quick check plot displayed and saved")
-
-# Initialize empty lists to store file names and paths
-Muser_file_names <- list()
-Muser_file_paths <- list()
-
-# Prompt the user for file names until they press Enter
-while (TRUE) {
-  # Prompt the user for a file name
-  Mfile <- readline("Enter the Excel file name (or press Enter to finish): ")
-  
-  # Check if the user pressed Enter (i.e., entered an empty string)
-  if (Mfile == "") {
-    break  # Exit the loop if the user pressed Enter
-  }
-  
-  # Add the user-provided file name to the Muser_file_names list
-  Muser_file_names <- append(Muser_file_names, list(Mfile))
-  
-  # Add the corresponding file path to the Muser_file_paths list
-  Muser_file_paths <- append(Muser_file_paths, list(file.path(file_path, Mfile)))
- 
-  # Initialize an empty list to store data frames
-  data_frames_list <- list()
-  
-  # Loop through each Excel file path
-  for (Muser_file_path in Muser_file_paths) {
-    # Read the Excel file
-    options(warn = -1)
-    
-    data_frame <- read_excel(Muser_file_path, skip = 2)
-    
-    excel_sheets <- excel_sheets(Muser_file_path)
-    
-    # Create an empty list to store data frames for each sheet in the current file
-    sheet_data_frames_list <- list()
-    
-    # Loop through each sheet in the current file (except the last one)
-    for (sheet_name in excel_sheets[-length(excel_sheets)]) {
-      # Read the sheet into a data frame
-      
-      sheet_data_frame1 <- read_excel(Muser_file_path,skip=0, sheet = sheet_name)
-      
-      num_columns <- ncol(sheet_data_frame1)
-      
-      # Define the column types for reading
-      col_types <- c("date", rep("numeric", 9), rep("text", num_columns - 10))
-      
-      sheet_data_frame2 <- read_excel(Muser_file_path,skip=2,sheet = sheet_name,col_types = col_types)
-      
-      # # Find the last row where "Total" is found in the first column
-      # last_row <- nrow(sheet_data_frame2)
-      # while (last_row > 0 && sheet_data_frame2[[1]][last_row] != "Total") {
-      #   last_row <- last_row - 1
-      # }
-      # 
-      # # Subset the data frame up to the last row
-      # sheet_data_frame2 <-  sheet_data_frame2 [1:last_row,]
-      
-      # Append the data frame for this sheet to the list
-      sheet_data_frames_list <- append(sheet_data_frames_list, list(sheet_data_frame2))
-    }
-    # Combine all data frames for the current file (except the last one) into one dataframe
-    combined_data_frame <- bind_rows(sheet_data_frames_list)
-  }
-  
-  ## sacar a R4 y ponerle hora 07:00 am 
-  ## a los demas, ponerle la primer hora de la planilla y tambien al promedio
-  combined_data_frame 
-  
-  combined_data_frame_av <- combined_data_frame[1:10] %>%
-    rowwise() %>%
-    mutate(Average_Rain = if (sum(!is.na(c_across(-Fecha))) > 1) {
-      mean(c_across(-Fecha), na.rm = TRUE)
-    } else {
-      NA_real_
-    }) %>%
-    ungroup() %>%
-    filter(!is.na(Fecha))%>%
-    mutate(date = ymd(as.Date(Fecha)))%>%
-    select(-Fecha)
-  
-  result_df_plotmanual<- result_df %>%
-  mutate(date = ymd=(as.Date(Date)))%>%
-    select(-Date)
-  
-  combined_data_frame_plot<-left_join(result_df_plotmanual, combined_data_frame_av, by=c("date"),everythig=TRUE)
-    
-        # Create a title with the download data date
-    file_date <- substr(user_file_names, 3, nchar(file_name))
-  ggtitle_text <- paste("Rain Data Quick Check (File Number:",colnames(result_df[2]),"and manual)")
-  
-  
-  # Reshape the data into long format
-  result_df_long_2 <- pivot_longer(combined_data_frame_plot, cols = -date, names_to = "Variable", values_to = "Value")
-  
-  # Create the first scatter plot
-  quickplot_rain_manual <- ggplot(result_df_long_2, aes(x = date, y = Value, color = Variable)) +
-    geom_point(size = 2) +
-    # geom_line(size = 0.5)+
-    labs(x = "Date", y = "Cumulative Rain in mm") +
-    ggtitle(ggtitle_text[1]) +
-    theme_minimal() +
-    theme_light() +  
-    theme(legend.position = "top")
-  pM<-ggplotly( quickplot_rain_manual)
-  print(pM)
-  
-  ggsave(quickplot_rain_manual, filename = "quickcheck3.png", width = 8, height = 6, dpi = 300)
-  # Save the processed data to a file
-  write.table(combined_data_frame_plot, file = "manual", sep = "\t", col.names = FALSE, row.names = FALSE,quote = FALSE)
-  
-  cat("Quick check plot with manual data for the period displayed and saved")
-  
-}  
-
-
+  return(list(path = file_path, file = output_file))
 }
 
+##############################################
+#' read otip file
+#' 
+#' Read in a processed file again
+#' @param name name of the file to read
+#' @param path_to_file path to the file
+#' 
+#' @export
+read_otip_file <- function(name, path_to_file){
+  data_out <- read_csv(paste0(path_to_file,"/",name))
+  # make sure dates are working
+  data_out <- data_out %>%
+    mutate(date = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
+    # rename Difference to Event
+    rename("Event" = "Difference")
+  return(data_out)
+}
 
-
-#############If all looks OK calculate daily rainfall
-#######################If not modify the .csv file and run the code again
-############################calculate daily rainfall
-
+#########################################
+#' difference data
+#' 
+#' Calculate the differenced event column
+#' @param data the dataframe with the data
+#' 
+#' @export
+diff_data <- function(data) {
+  data1 <- data%>%
+    mutate(Difference = c(0,diff(Event))) %>%
+    #ifelse(Event >= lag(Event, default = first(Event)), Event - lag(Event, default = first(Event)), 0))%>%
+    select(Date, Difference)
+  return(data1)
+}
 

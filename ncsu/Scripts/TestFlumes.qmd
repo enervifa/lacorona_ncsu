@@ -30,3 +30,56 @@ The functions are stored in the scripts folder, the same folder as the code vers
 ```{r loadfunctions}
 source("Functions_Flumes.R") 
 ```
+
+testing the functions
+
+Read in the files
+
+```{r read-files}
+File_info <- read_list_flume("../flumes")
+str(File_info)
+```
+
+Lets' also test the manual read of S1110119.csv (don't use quotes)
+
+Testing the HOBOU20 function
+
+```{r}
+test_info <- read_flume_files(file_path = "../flumes")
+test_info
+```
+
+Now we can check the processing of the files, for the manual file
+
+```{r}
+test_data <- file_process(test_info$names[1], test_info$paths[1],
+                          test_info$instrument[1], output_dir = "../flumes/processed")
+test_data
+```
+
+### Stevens
+
+More challenging, testing the `read_stevens` function: filename v3110119csv.csv
+
+```{r}
+test_info_stevens <- read_flume_files(file_path = "../flumes")
+test_info_stevens
+```
+
+Now process
+
+```{r}
+test_data_stevens <- file_process(test_info_stevens$names[1], 
+                                 file_path =test_info_stevens$paths[1],
+                          instrument = test_info_stevens$instrument[1], 
+                          output_dir = "../flumes/processed")
+test_data_stevens
+```
+
+```{r}
+process_and_plot_files(file_info = File_info, output_dir = "../flumes/processed")
+```
+
+```{r}
+getwd()
+```

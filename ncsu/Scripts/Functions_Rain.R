@@ -25,6 +25,7 @@ read_user_input <- function(in_path) {
       user_file_paths <- append(user_file_paths, in_path)
     } else user_file_paths <- append(user_file_paths, dirname(file))
   }  
+ # browser()
     return(list(names = list_c(user_file_names), paths = list_c(user_file_paths)))
 }
 
