@@ -2,6 +2,7 @@
 # not tested
 
 require(tidyverse)
+require(plotly)
 
 
 
@@ -79,19 +80,31 @@ extract_pre_fix <- function(file_name) {
 #' This function only works for the current known filename constructs
 #' will need to be checked if construct of file names changes
 #' @param file_name character string, name of the file
+#' @param file_path_in file folder, set to default file_path
 #' 
 #' @example
 #' test_instrument <- identify_instrument("v31101199.csv")
 #' test_instrument
 #' 
 #' @export
-identify_instrument <- function(file_name) {
+identify_instrument <- function(file_name, file_path_in = file_path) {
   prefix <- extract_pre_fix(file_name)
+  # is there a thing called "vel" in the filename (velocity)
   vel_trigger <- ifelse(grepl("vel",file_name, ignore.case = T) == T,
                         TRUE, FALSE)
-  instrument <- ifelse(vel_trigger == T, "ISCO", 
-                       ifelse((grepl("p", prefix) == T |
-                                grepl("S", prefix) == T), "HOBOU20", "StevensU12"))
+  # read first three lines of the file
+  grab_lines <- read_lines(file.path(file_path_in,file_name), n_max=3)
+
+  if(vel_trigger == T) {
+    instrument <- "ISCO_velocity"
+  } else {   
+    if (grepl("Volt",grab_lines[2], ignore.case =T)) {
+      instrument <- "StevensU12"
+    } else {
+      instrument <- ifelse((grepl("p", prefix) == T |
+                grepl("S", prefix) == T), "HOBOU20", "ISCO_nivel")
+    }
+  }
   return(instrument)
 }
 
@@ -132,7 +145,8 @@ read_flume_files <- function(file_path, manual = T){
     # Extract the file prefix, date and instrument
     file_prefix <- append(file_prefix, extract_pre_fix(file))
     file_date <- append(file_date, extract_date(file))
-    instrument <- append(instrument, identify_instrument(file))
+    instrument <- append(instrument, identify_instrument(file, 
+                                                         file_path_in = file_path))
     
     # inform the user
     cat("Processing file:", file, "\n")
@@ -171,7 +185,8 @@ read_list_flume <- function(file_path, file_ext = ".csv") {
                         extract_pre_fix)
   file_date <- list_c(lapply(map(user_file_list, extract_date),'[[',1))
   #browser()
-  instrument <- map_chr(user_file_list, identify_instrument)
+  instrument <- map_chr(user_file_list, identify_instrument, 
+                        file_path_in = file_path)
   
 
   # return same structure as read_user_input
@@ -276,7 +291,8 @@ file_process <- function(file_name, file_path, instrument, output_dir) {
         if (instrument == "StevensU12")  {
           #browser()
           prefix <- extract_pre_fix(file_name)
-          data_df <- read_stevens(file_name, prefix, file_path, plotit = T)
+          data_df <- read_stevens(file_name, prefix, file_path, plotit = T,
+                                  outdir = output_dir)
         } else {
           data_df <- read_isco(file_name, file_path, plotit = T)
           
@@ -334,10 +350,15 @@ read_hobou20 <- function(filename, input_dir ,
     print(p)
     #browser()
     ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    return(list(data =  file_out %>% select(`Date and Time`,
+                                                    `Water Level, meters`),
+                plot = p))
 
+  } else {
+    return(file_out %>% select(`Date and Time`,
+                               `Water Level, meters`))
+    
   }
-  return(file_out %>% select(`Date and Time`,
-                             `Water Level, meters`))
   
 }
 
@@ -356,7 +377,7 @@ read_stevens <- function(filename, file_prefix, input_dir,
   #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         skip = skip, col_types = coltypes)
-  browser()
+  #browser()
   file_read <- file_read %>%
     mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
                                       tz = "America/Argentina/Buenos_Aires")) 
@@ -376,31 +397,56 @@ read_stevens <- function(filename, file_prefix, input_dir,
                file_prefix == "V2" ~ -0.666 + 1.2*`Volt, V`,
                file_prefix == "V3" ~ 3.266 -1.28761*`Volt, V`,
                file_prefix == "V4" ~ -0.65 + 1.2*`Volt, V`
-             )) %>%
-    select(`Date and Time`,`Water Level, meters`, logger)
-  return(data_out)
+             ))
+  
+  data_out <- data_out %>%
+    select(`Date and Time`,`Water Level, meters`)
   #  }
   #browser()
   if (plotit == T) {
+    ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
     p <-   data_out %>%
       ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
-      theme_bw()
+      theme_bw() + ggtitle(ggtitle_text)
     print(p)
     ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    return(list(data = data_out, plot = p))
+  } else {
+  return(data_out)
   }
-  return(file_out %>% select(`Date and Time`, `Water Level, meters`))
 }
 
-### read ISCO
+
+
+############ --- read_ISCO ----
+#' function to read ISCO files
+#' 
+#' distighuishes between velocity and "nivel"
+#' @param filename name of the file to process
+#' @param input_dir input directory
+#' @param coltypes column types default set to cols("c","i","i")
+#' @param skip number of lines to skip
+#' @param plotit flag for plotting
+#' @param velocity whether or not velocity should be read in
+#' 
+#' @export
 read_isco <- function(filename, input_dir , 
                       coltypes = cols("c","i","i"),
-                      skip = 7, plotit = F, out_dir = output_dir) {
+                      skip = 7, plotit = F, velocity = vel_trigger) {
   #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         col_names =F,
                         skip = skip, col_types = coltypes)
-  colnames(file_read) <- c("Date and Time", "Sample",
-                           "Level (ft)")
+
+  if (velocity) {
+    colnames(file_read) <- c("Date and Time", "Sample",
+                             "Velocity")
+    
+  } else {
+    colnames(file_read) <- c("Date and Time", "Sample",
+                             "Level (ft)")
+    
+  }
   file_out <- file_read %>%
     mutate(`Date and Time` = time_convert(`Date and Time`)) %>%
     mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
@@ -413,111 +459,8 @@ read_isco <- function(filename, input_dir ,
       ggplot(aes(`Date and Time`,values, colour = Measures)) +
       geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")
     print(p)
-    png(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
-    print(p)
-    dev.off()
   }
   return(file_out %>% select(`Date and Time`,`Level (ft)`))
 }
 
-
-
-
-# shared with Functions_Rain.R
-
-#########################################
-#' Read data from a file
-#' 
-#' This function reads the data from the files in the file_list
-#' It converts the date column into real dates
-#' It select only the required columns
-#' 
-#' @param name name of a file to be read
-#' @param file_path a character string giving the path for the files
-#' @param select_col numbers of the columns to select
-#'
-#' @export
-read_data_file <- function(name, file_path, select_col = 2:4) {
-  #read in file
-  #browser()
-  data <- read_csv(paste(file_path,name,sep="/"), col_names = FALSE, skip=2) %>%
-    select(all_of(select_col))
-  
-  # Rename columns
-  colnames(data) <- c("Date_Time", "Temp", "Event")
-  
-  # Convert Date_Time to POSIXct format
-  data <- data %>%
-    mutate(Date = mdy_hms(Date_Time, tz = "America/Argentina/Buenos_Aires"))%>%
-    # Sort the data by 'Event' column and then by 'Date' (renamed Date_time column)
-    # do we want to keep Date or Date_Time?
-    arrange(Event, Date)%>%
-    # Select 'Date' and 'Event' columns and remove rows with NAs (no data)
-    select(Date, Event) %>%
-    na.omit(data)
-  
-  return(data)
-}
-
-#########################################
-#' Write a data frame to a file for a specific input file
-#' 
-#' This function reads the data from the files in the file_list
-#' It converts the date column into real dates
-#' It select only the required columns
-#' 
-#' @param name name of the original file to be written
-#' @param df the final processed data frame
-#' @param input a list of file names and input paths, default given
-#' @param output_path optional output path
-#'
-#' @export
-# write otip file
-write_otip_file <- function(name, df, input = input, output_path = NULL) {
-  # Define the output file path and name tag
-  #browser()
-  file_path <- input$paths[[which(input$names==name)]]
-  #output_path <- paste0(file_path,"/","OTIP_", name)
-  output_file <- paste0("OTIP_", name)
-  #browser()
-  # Save the processed data to a csv file
-  if (!is.null(output_path)) {
-    write_csv(df, file = paste0(file_path,"/", output_path, "/", output_file), quote = "none")
-  } else write_csv(df, file = paste0(file_path,"/", output_file), quote = "none")
-  
-  return(list(path = file_path, file = output_file))
-}
-
-##############################################
-#' read otip file
-#' 
-#' Read in a processed file again
-#' @param name name of the file to read
-#' @param path_to_file path to the file
-#' 
-#' @export
-read_otip_file <- function(name, path_to_file){
-  data_out <- read_csv(paste0(path_to_file,"/",name))
-  # make sure dates are working
-  data_out <- data_out %>%
-    mutate(date = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
-    # rename Difference to Event
-    rename("Event" = "Difference")
-  return(data_out)
-}
-
-#########################################
-#' difference data
-#' 
-#' Calculate the differenced event column
-#' @param data the dataframe with the data
-#' 
-#' @export
-diff_data <- function(data) {
-  data1 <- data%>%
-    mutate(Difference = c(0,diff(Event))) %>%
-    #ifelse(Event >= lag(Event, default = first(Event)), Event - lag(Event, default = first(Event)), 0))%>%
-    select(Date, Difference)
-  return(data1)
-}
 

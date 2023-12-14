@@ -54,12 +54,12 @@ Now we can check the processing of the files, for the manual file
 ```{r}
 test_data <- file_process(test_info$names[1], test_info$paths[1],
                           test_info$instrument[1], output_dir = "../flumes/processed")
-test_data
+ggplotly(test_data$plot)
 ```
 
 ### Stevens
 
-More challenging, testing the `read_stevens` function: filename v3110119csv.csv
+More challenging, testing the `read_stevens` function: filename V4111219.csv
 
 ```{r}
 test_info_stevens <- read_flume_files(file_path = "../flumes")
@@ -73,8 +73,14 @@ test_data_stevens <- file_process(test_info_stevens$names[1],
                                  file_path =test_info_stevens$paths[1],
                           instrument = test_info_stevens$instrument[1], 
                           output_dir = "../flumes/processed")
-test_data_stevens
+test_data_stevens$data
 ```
+
+### ISCO files
+
+There are two types of ISCO files, one with velocity values, the other with level values.
+
+Need to adjust the `read_isco` function to differentiate between these two
 
 ```{r}
 process_and_plot_files(file_info = File_info, output_dir = "../flumes/processed")
