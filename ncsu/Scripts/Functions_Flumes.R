@@ -1,22 +1,11 @@
 # Process flumes data
 # not tested
+# tested 16/12/2023 only things missing is a function to process files from a list
+
 
 require(tidyverse)
 require(plotly)
 
-
-
-# Look at the table in github
-  # | Data/Instrument                                                  | Extension/Filenames                                                | Scripts to Process      |
-  # |-----------------------------------------------------------------|---------------------------------------------------------|-------------------------|
-  # | Rain/Automatic rain gauges (R1,R7,EM)                           | .hobo/ R1061523.csv, R7061523.csv, EM061523.csv               | 1_quickcheck_rain.R, 2_cumrain.R |
-  # | Rain/Automatic rain gauges and Manual Rain gauges (R2,R3,R4,R5,R6,RV1) | .hobo /R1061523.csv, R7061523.csv, EM061523.csv, .xlsx/Precipitaciones La Corona 2023.xls | 1_quickcheck_rain.R |
-  # | Weather/Weather Station                                          | .dat/EM061523.dat                                            | 1_quickcheck_weather.R  |
-  # | Flume/Hobou20                                                    |.hobo/  S1061523.csv, S2061523.csv, v3p111219.csv, V4p111219.csv | quickcheckflumes.R      |
-  # | Flume/StevensU12                                                 | .hobo/ V4111219.csv | quickcheckflumes.R      |
-  # | Flume/ISCO                                                       | .csv/ v3110119csv.csv  V1052523.csv | quickcheckflumes.R      |
-  # | Flume/ISCOvel                                                    | .csv/  V3111219VEL.csv, v3110119vel.csv| quickcheckflumes.R      |
-  
 
 #######  FIRST FUNCTION RUN
 #file_path is the directory of Process file
@@ -263,6 +252,7 @@ process_file_list <- function(file_info, out_path) {
   output_list <- list()
   
   for(i in 1:length(file_info$names)) {
+    #browser()
     output_list[[i]] <- file_process(file_info$names[i],file_info$paths[i], 
                                      file_info$instrument[i], output_dir = out_path)
     
@@ -281,30 +271,36 @@ process_file_list <- function(file_info, out_path) {
 #' 
 #' @export
 file_process <- function(file_name, file_path, instrument, output_dir) {
-
+      if (!dir.exists(output_dir)) {  
+        # Create the output directory if it doesn't exist
+        dir.create(output_dir, showWarnings = FALSE)
+      }
       if (instrument == "HOBOU20") {
         # Process and plot files from HOBO20 in V1V2, and "v3p"," V4p" from V3V4
         #browser()
-        data_df <- read_hobou20(filename = file_name, input_dir = file_path ,plotit = T,
+        out_plot <- read_hobou20(filename = file_name, 
+                                 input_dir = file_path ,plotit = T,
                                 outdir = output_dir) 
       } else {
         if (instrument == "StevensU12")  {
           #browser()
           prefix <- extract_pre_fix(file_name)
-          data_df <- read_stevens(file_name, prefix, file_path, plotit = T,
+          out_plot <- read_stevens(file_name, prefix, file_path, plotit = T,
                                   outdir = output_dir)
         } else {
-          data_df <- read_isco(file_name, file_path, plotit = T)
+          if (instrument =="ISCO_velocity") vel_trigger = T else vel_trigger = F
+          out_plot <- read_isco(file_name, file_path, plotit = T, 
+                                velocity = vel_trigger,
+                                outdir = output_dir)
           
         }
       }
 
-      return(data_df)
+      return(out_plot)
 }
 
 # 
-# # Create the output directory if it doesn't exist
-# dir.create(output_dir, showWarnings = FALSE)
+# 
 
 
 
@@ -339,6 +335,10 @@ read_hobou20 <- function(filename, input_dir ,
     select(`Date and Time`, `Temp, ?C`,
            `Water Level, meters`)
   
+  write_csv(file_out %>% select(`Date and Time`,
+                                `Water Level, meters`), 
+            paste0(outdir,"/",filename, "_processed.csv"))
+  
   if (plotit == T) {
     p <- file_out %>%
       na.omit() %>%
@@ -347,12 +347,10 @@ read_hobou20 <- function(filename, input_dir ,
       ggplot(aes(`Date and Time`,values, colour = Measures)) +
       geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")+
       ggtitle(ggtitle_text) + theme_classic()
-    print(p)
+    #print(p)
     #browser()
-    ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
-    return(list(data =  file_out %>% select(`Date and Time`,
-                                                    `Water Level, meters`),
-                plot = p))
+    #ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    return(p)
 
   } else {
     return(file_out %>% select(`Date and Time`,
@@ -362,11 +360,22 @@ read_hobou20 <- function(filename, input_dir ,
   
 }
 
-# --- HOBOU12--- Stevens
+############## --- HOBOU12--- Stevens
+#'
+#'function to read in the Stevens HoboU12 logger data
+#' Now returns a ggplot object if plotit == T
+#' 
+#' @param filename name of file to read in
+#' @param file_prefix the extracted file_prefix indicating the flume
+#' @param input_dir input directory to read filefrom
+#' @param skip numbe rof lines to skip
+#' @param plotit  plotting flag
+#' @param outdir the output directory defaults to "processed"
+#' 
+#' @export
 
-# read the stevens logger
 read_stevens <- function(filename, file_prefix, input_dir,
-                         skip = 1, plotit = F, outdir = output_dir) {
+                         skip = 1, plotit = F, outdir = "../flumes/processed") {
   #browser()
   # messy, but currently the only way I can do this
   if(str_to_lower(file_prefix) == "v1") coltypes <- cols("d","c","d","d","c","c","c","c","c")
@@ -401,16 +410,21 @@ read_stevens <- function(filename, file_prefix, input_dir,
   
   data_out <- data_out %>%
     select(`Date and Time`,`Water Level, meters`)
+  # write file to output directory
+  write_csv(data_out, 
+            paste0(outdir,"/",filename, "_processed.csv"))
+  
   #  }
   #browser()
   if (plotit == T) {
     ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
     p <-   data_out %>%
       ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
-      theme_bw() + ggtitle(ggtitle_text)
-    print(p)
-    ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
-    return(list(data = data_out, plot = p))
+      theme_classic() + ggtitle(ggtitle_text)
+    # print(p)
+    # ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    # return the plot object
+    return(p)
   } else {
   return(data_out)
   }
@@ -432,7 +446,8 @@ read_stevens <- function(filename, file_prefix, input_dir,
 #' @export
 read_isco <- function(filename, input_dir , 
                       coltypes = cols("c","i","i"),
-                      skip = 7, plotit = F, velocity = vel_trigger) {
+                      skip = 7, plotit = F, velocity = vel_trigger,
+                      outdir = output_dir) {
   #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         col_names =F,
@@ -440,27 +455,58 @@ read_isco <- function(filename, input_dir ,
 
   if (velocity) {
     colnames(file_read) <- c("Date and Time", "Sample",
-                             "Velocity")
+                             "Velocity (m/s)")
+    file_out <- file_read %>%
+      mutate(`Date and Time` = time_convert(`Date and Time`))  %>%
+      mutate(`Velocity (m/s)` = as.numeric(paste(Sample, `Velocity (m/s)`, sep = ".")))
+    data_out <- file_out %>% select(`Date and Time`,`Velocity (m/s)`)
     
   } else {
     colnames(file_read) <- c("Date and Time", "Sample",
                              "Level (ft)")
+    file_out <- file_read %>%
+      mutate(`Date and Time` = time_convert(`Date and Time`))  %>%
+      mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
+    data_out <- file_out %>% select(`Date and Time`,`Level (ft)`)
     
   }
-  file_out <- file_read %>%
-    mutate(`Date and Time` = time_convert(`Date and Time`)) %>%
-    mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
-  
+
+  # write file to output directory
+  write_csv(data_out, 
+            paste0(outdir,"/",filename, "_processed.csv"))
+  #browser()
+    
   if (plotit == T) {
-    p <- file_out %>%
+    ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
+    if (velocity) {
+      p <- data_out %>%
+         na.omit() %>%
+        ggplot(aes(`Date and Time`,`Velocity (m/s)`)) + geom_line() +
+        theme_classic() + ggtitle(ggtitle_text)
+      return(p)
+    } else {
+      p <- data_out %>%
       na.omit() %>%
-      pivot_longer(cols = `Sample`:`Level (ft)`,
-                   names_to = "Measures", values_to ="values") %>%
-      ggplot(aes(`Date and Time`,values, colour = Measures)) +
-      geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")
-    print(p)
-  }
-  return(file_out %>% select(`Date and Time`,`Level (ft)`))
+      ggplot(aes(`Date and Time`,`Level (ft)`)) + geom_line() +
+      theme_classic() + ggtitle(ggtitle_text)
+      return(p)
+    }
+  } else return(data_out)
+
 }
 
+# auxillary function to deal with a.m. and p.m.
 
+time_convert <- function(text_input) {
+  text_out <- str_sub(text_input,1,19)
+  text_out <- ifelse(str_detect(text_input, "a.m.") == T,
+                     str_c(text_out," AM"),
+                     str_c(text_out," PM"))
+  # browser()
+  text_out <- parse_date_time(text_out,
+                              "dmy IMS Op")
+  # tz is not working in R4.3.0, unclear when this will be fixed                              
+  # "dmy IMS Op",
+  # tz = "America/Argentina/Buenos_Aires")
+  return(text_out)
+}

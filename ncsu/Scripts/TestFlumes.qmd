@@ -19,8 +19,8 @@ To be able to run this notebook, the following R packages should be available
 ```{r message = FALSE}
 library(tidyverse) 
 library(plotly) 
-library(readxl) 
-library(htmlwidgets)
+# library(readxl) 
+# library(htmlwidgets)
 ```
 
 ## Loading the developed functions
@@ -44,46 +44,94 @@ Lets' also test the manual read of S1110119.csv (don't use quotes)
 
 Testing the HOBOU20 function
 
-```{r}
+```{r info-hobo}
 test_info <- read_flume_files(file_path = "../flumes")
 test_info
 ```
 
-Now we can check the processing of the files, for the manual file
+Now we can check the processing of the files, for the manual file.
 
-```{r}
+This function now returns a ggplot object and the data output file is written to the output_dir
+
+```{r test-hobo}
 test_data <- file_process(test_info$names[1], test_info$paths[1],
                           test_info$instrument[1], output_dir = "../flumes/processed")
-ggplotly(test_data$plot)
+ggplotly(test_data)
 ```
 
 ### Stevens
 
 More challenging, testing the `read_stevens` function: filename V4111219.csv
 
-```{r}
+```{r info-stevens}
 test_info_stevens <- read_flume_files(file_path = "../flumes")
 test_info_stevens
 ```
 
-Now process
+Now process, also returns a ggplot object and data written to the output_dir
 
-```{r}
+```{r test-stevens}
 test_data_stevens <- file_process(test_info_stevens$names[1], 
                                  file_path =test_info_stevens$paths[1],
                           instrument = test_info_stevens$instrument[1], 
                           output_dir = "../flumes/processed")
-test_data_stevens$data
+ggplotly(test_data_stevens)
 ```
 
 ### ISCO files
 
 There are two types of ISCO files, one with velocity values, the other with level values.
 
-Need to adjust the `read_isco` function to differentiate between these two
+The `read_isco` function has been adjusted from the original to differentiate between these two
+
+First test the `isco_level` instrument v311o119csv.csv
+
+```{r info-isco}
+test_info_isco <- read_flume_files(file_path = "../flumes")
+test_info_isco
+```
+
+We can now process this file
+
+```{r isco-process}
+test_data_isco_n <- file_process(test_info_isco$names[1], 
+                                 file_path =test_info_isco$paths[1],
+                          instrument = test_info_isco$instrument[1], 
+                          output_dir = "../flumes/processed")
+ggplotly(test_data_isco_n)
+
+```
+
+Second test the `isco_velocity` instrument v3110119vel.csv
+
+```{r info-isco2}
+test_info_isco_v <- read_flume_files(file_path = "../flumes") 
+test_info_isco_v
+```
+
+We can now process this file
+
+```{r isco-process2}
+test_data_isco_v <- file_process(test_info_isco_v$names[1],
+                                 file_path =test_info_isco_v$paths[1],
+                                 instrument = test_info_isco_v$instrument[1],
+                                 output_dir = "../flumes/processed") 
+ggplotly(test_data_isco_v) 
+```
+
+## Process a list of files
+
+This also should work
+
+```{r process-list}
+test_list <- process_file_list(file_info = File_info, out_path = "../flumes/processed")
+
+```
+
+We can now plot each of the objects in the test_list
 
 ```{r}
-process_and_plot_files(file_info = File_info, output_dir = "../flumes/processed")
+ggplotly(test_list[[8]])
 ```
 
 ```{r}
