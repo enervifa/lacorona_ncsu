@@ -74,18 +74,18 @@ process_and_plot_files <- function(file_info) {
   file_ins <- file_info$ins
   
   if (file_ins %in% c("Hobo20")) {
-  # Process and plot files from HOBO20 in V1V2, and "v3p"," V4p" from V3V4
+    # Process and plot files from HOBO20 in V1V2, and "v3p"," V4p" from V3V4
     browser()
-  read_hobou20(filename = filename, input_dir = read_dir ,plotit = T) 
-  return(result)
-  
- # } else if (file_ins %in% c("StevensU12"))  {
- browser()
- read_stevens(filename, input_dir = read_dir, plotit = T)
- read_stevens(filename, input_dir = read_dir, plotit = T)
- #    
- # } else {
-
+    read_hobou20(filename = filename, input_dir = read_dir ,plotit = T) 
+    return(result)
+    
+    # } else if (file_ins %in% c("StevensU12"))  {
+    browser()
+    read_stevens(filename, input_dir = read_dir, plotit = T)
+    read_stevens(filename, input_dir = read_dir, plotit = T)
+    #    
+    # } else {
+    
   }
   # # Save individual plot as PNG
   # plot_filename <- file.path(output_dir, paste0(filename, "_plot.png"))
@@ -182,15 +182,15 @@ read_stevens <- function(filename, input_dir,
     select(`Date and Time`, `Volt, V`)
   
   data_out <-   file_out  %>% 
-      mutate(`Water Level, meters` =
-               case_when(
-                 which_catch == 1 ~ -0.03549 + 1.2*`Volt, V`,
-                 which_catch == 2 ~ -0.666 + 1.2*`Volt, V`,
-                 which_catch == 3 ~ 3.266 -1.28761*`Volt, V`,
-                 which_catch == 2 ~ -0.65 + 1.2*`Volt, V`
-               )) %>%
-      select(`Date and Time`,`Water Level, meters`, logger)
-    return(data_out)
+    mutate(`Water Level, meters` =
+             case_when(
+               which_catch == 1 ~ -0.03549 + 1.2*`Volt, V`,
+               which_catch == 2 ~ -0.666 + 1.2*`Volt, V`,
+               which_catch == 3 ~ 3.266 -1.28761*`Volt, V`,
+               which_catch == 2 ~ -0.65 + 1.2*`Volt, V`
+             )) %>%
+    select(`Date and Time`,`Water Level, meters`, logger)
+  return(data_out)
   #  }
   browser()
   if (plotit == T) {

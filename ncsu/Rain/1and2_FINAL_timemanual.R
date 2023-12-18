@@ -51,7 +51,7 @@ while (TRUE) {
   if (file == "") {
     break  # Exit the loop if the user pressed Enter
   }
-  
+
   # Add the user-provided file name to the user_file_names list
   user_file_names <- append(user_file_names, list(file))
     # Add the corresponding file path to the user_file_paths list
@@ -66,10 +66,10 @@ for (user_file_paths in user_file_names) {
   # Read the .csv file
   data <- read.csv(user_file_paths, header = FALSE, sep = ",",skip=2)%>%
     select(2:4,)
-  
+
   # Rename columns
   colnames(data) <- c("Date_Time", "Temp", "Event")
-  
+
   # Convert Date_Time to POSIXct format
   data <- data %>%
     mutate(Date = mdy_hms(Date_Time, tz = "America/Argentina/Buenos_Aires"))%>%
@@ -89,12 +89,12 @@ for (user_file_paths in user_file_names) {
 #  browser()
   # Save the processed data to a file
   write.table(data1, file = output_file, sep = "\t", col.names = FALSE, row.names = FALSE,quote = FALSE)
-  
+
   cat("Processed file:", basename(user_file_paths), "Saved output to:", output_file, "\n")
 }
 }
 }
-#this fucntion now works only with Date Time format to outpit OTIP tag files 
+#this fucntion now works only with Date Time format to outpit OTIP tag files
 #this files contain the individual tips
 
 ###########################################################
@@ -183,11 +183,12 @@ quick_check_plot <- function(file_path){
   # dates times across all data frames in data2_list. 
   # Extract and stack the "Date" column from each data frame in data2_list
   
-  stacked_df <- bind_rows(lapply(data2_list, function(df) select(df, date))) %>%
-    arrange(date)
+  result_df <- bind_rows(data2_list) %>%
+    select(date) %>%
+    arrange(date) %>%
+    summarise(dates = unique(date))
   
-  result_df <-unique(stacked_df)
-  
+
   # Loop through each element in data2_list
   for (i in 1:length(data2_list)) {
     # Left join the current data frame with the result data frame using JulianDate

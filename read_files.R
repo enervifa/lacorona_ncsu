@@ -16,17 +16,17 @@ read_hobou20 <- function(filename, input_dir ,
       file_read <- file_read %>%
         mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
                                          tz = "America/Argentina/Buenos_Aires")) 
-      colnames(file_read)[3:6] <- c("Abs Pressure kPa", "Temp, °C",
+      colnames(file_read)[3:6] <- c("Abs Pressure kPa", "Temp, ?C",
                                     "Bar Pressure kPa",
                                     "Water Level, meters")
       file_out <- file_read %>%
-        select(`Date and Time`, `Temp, °C`,
+        select(`Date and Time`, `Temp, ?C`,
                `Water Level, meters`)
     
       if (plotit == T) {
         p <- file_out %>%
           na.omit() %>%
-          pivot_longer(cols = `Temp, °C`:`Water Level, meters`,
+          pivot_longer(cols = `Temp, ?C`:`Water Level, meters`,
                        names_to = "Measures", values_to ="values") %>%
           ggplot(aes(`Date and Time`,values, colour = Measures)) +
             geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")
@@ -64,10 +64,10 @@ read_stevens <- function(filename, input_dir,
     mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
                                      tz = "America/Argentina/Buenos_Aires")) 
   colnames(file_read)[3] <- "Volt, V"
-  # if (grep("Temp, °C", colnames(file_read)[4]) == T) {
-  #   colnames(file_read)[4] <- "Temp, °C"
+  # if (grep("Temp, ?C", colnames(file_read)[4]) == T) {
+  #   colnames(file_read)[4] <- "Temp, ?C"
   #   file_out <- file_read %>%
-  #     select(`Date and Time`, `Volt, V`,`Temp, °C`)
+  #     select(`Date and Time`, `Volt, V`,`Temp, ?C`)
   # } else {
     file_out <- file_read %>%
       select(`Date and Time`, `Volt, V`)
@@ -94,16 +94,16 @@ read_stevens <- function(filename, input_dir,
 read_isco <- function(filename, input_dir , 
                       coltypes = cols("c","i","i"),
                       skip = 7, plotit = F) {
-#browser()
+  #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         col_names =F,
                         skip = skip, col_types = coltypes)
   colnames(file_read) <- c("Date and Time", "Sample",
-                                "Level (ft)")
+                           "Level (ft)")
   file_out <- file_read %>%
     mutate(`Date and Time` = time_convert(`Date and Time`)) %>%
     mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
-
+  
   if (plotit == T) {
     p <- file_out %>%
       na.omit() %>%
@@ -163,14 +163,14 @@ read_bar <- function(filename, input_dir ,
   file_read <- file_read %>%
     mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`), 
                                      tz = "America/Argentina/Buenos_Aires")) 
-  colnames(file_read)[3:4] <- c("Abs Pressure kPa", "Temp, °C")
+  colnames(file_read)[3:4] <- c("Abs Pressure kPa", "Temp, ?C")
   file_out <- file_read %>%
-    select(`Date and Time`,`Abs Pressure kPa`, `Temp, °C`)
+    select(`Date and Time`,`Abs Pressure kPa`, `Temp, ?C`)
   
   if (plotit == T) {
     p <- file_out %>%
       na.omit() %>%
-      pivot_longer(cols = `Abs Pressure kPa`:`Temp, °C`,
+      pivot_longer(cols = `Abs Pressure kPa`:`Temp, ?C`,
                    names_to = "Measures", values_to ="values") %>%
       ggplot(aes(`Date and Time`,values, colour = Measures)) +
       geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")

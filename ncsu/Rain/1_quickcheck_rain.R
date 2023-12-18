@@ -99,7 +99,7 @@ quick_check_plot <- function(file_path){
   #write enpty list to storage the files 
   data2_list<-list()
   # Specify the file path
-  file_path <- "C:/Users/Lenovo/Downloads/SampleFiles3"
+  #file_path <- "C:/Users/Lenovo/Downloads/SampleFiles3"
   setwd(file_path)
   
   # Create empty lists to store user-provided file names and paths
