@@ -75,7 +75,7 @@ plot_data <- function(df_in) {
     pivot_longer(cols = !contains('Date and Time'),
                  names_to = "Measures", values_to ="values") %>%
     ggplot(aes(`Date and Time`,values, colour = Measures)) +
-    geom_line() + facet_wrap(~Measures, scales = "free") +
+    geom_line() + facet_wrap(~Measures, scales = "free_y") +
     theme_bw() + theme(axis.text.x = element_text(angle = 45))
   return(p)
 }
@@ -131,12 +131,12 @@ read_hobo_weather <- function(filename, dir, cols_to_drop, c_names_in = c_names,
   # Create a 'Date and Time' column
   file_out <- create_date_time(file_read,year_file) %>%
     select(!cols_to_drop)
-
+  # write out the file
   if (write_it == T) {
     write_weather_file(file_out, filename, paste0(dir,"/processed"))
   }
   
-  # plotting        
+  # plotting (when plotting include dataset and plotting object)        
   if (plotit == T) {
     p <- plot_data(file_out)
     return(list(data = file_out, plot = p)) 
@@ -145,7 +145,14 @@ read_hobo_weather <- function(filename, dir, cols_to_drop, c_names_in = c_names,
  
 }          
 
-
+##########################################################
+#' function to calculate daily summaries
+#'
+#' Function to calculate daily summaries for climate variables
+#' @param filename Name of file to read in
+#' @example
+#' 
+#' @export
 daily_summary <- function(df_in) {
   daily_minmax <- df_in  %>%
     group_by(Date = lubridate::date(`Date and Time`)) %>%
@@ -158,8 +165,8 @@ daily_summary <- function(df_in) {
       RHmean=((RHmax + RHmin)/2),
       WS=mean(windspeed),
       SRsum=sum(`solar radiation`),
-      SR=((sum(`solar radiation`)/(15*60*1000000))),
-      NSR_calc=(SR*(1-0.23)*3600*24),
+      SR=((sum(`solar radiation`)/(15*60*1000000))), # unit conversion
+      NSR_calc=(SR*(1-0.23)*3600*24), # unit conversion
     )
   return(daily_minmax)
 }

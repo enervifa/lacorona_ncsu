@@ -43,7 +43,7 @@ c_names <- c("id", "julian", "time", "battery voltage",
              "Temperature °C",
              "RelH", "windspeed", "wind direction", "net radiation",
              "solar radiation",   "rainfall")
-
+# columns to drop when you have created the date and time variable
 cols_drop <- c("id", "julian", "time", "battery voltage")
 ```
 
