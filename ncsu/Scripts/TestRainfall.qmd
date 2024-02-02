@@ -81,9 +81,7 @@ file_path_in <- "../Rain"
 test_manual <- process_rain_data(file_path_in)
 ```
 
-```         
- "EM061523.csv" "R1061523.csv" "R7061523.csv"
-```
+     "EM061523.csv" "R1061523.csv" "R7061523.csv"
 
 ## Quick check plot
 
@@ -106,4 +104,18 @@ and plot 2
 
 ```{r makeplot2}
 check_plot(data_processed, plot = 2)
+```
+
+Add a plot to compare automatic pluviometers against each other?
+
+```{r combinetoplot}
+
+#process and combine each element in data_processed and discard null ones
+breaks_data <- purrr::discard(lapply(data_processed, match_breaks), is.null)
+# Combine the data frames within the list using full join
+combined_data <- Reduce(function(x, y) merge(x, y, by = "order", all = FALSE), breaks_data )
+```
+
+```{r makeplot3}
+third_quick_plot(combined_data)
 ```

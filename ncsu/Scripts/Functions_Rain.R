@@ -98,6 +98,7 @@ diff_data <- function(data) {
   return(data1)
 }
 
+##############
 ###############################################
 ###############################################
 #'first plotting function
@@ -154,7 +155,51 @@ second_quick_plot  <- function(df, ggtitle_text) {
 
 }
 
+###############################################
+#'third plotting function
+#'
+#'@param df a data frame/tibble as input
+#'
+#'@return a plotly object
+#'
+#'@examples 
+#'NA
+#'
+#'@export
 
+third_quick_plot <- function(df) {
+  
+  # Create the plot
+  quickplot_rain3 <- ggplot(na.omit(df), aes(x = CumRainmm.x, y = CumRainmm.y)) +
+    geom_point(size=0.5) +
+    theme_minimal() +
+    theme_light() +
+    theme(legend.position = "top")#+
+    #abline(h = 0, v = 0, col = "red", lty = 2) +  # Add abline
+  
+
+  # Convert the plot to a Plotly object 
+  p3 <- ggplotly(quickplot_rain3)
+  
+  p3 <- p3 %>%
+    layout(
+      xaxis = list(title = unique(na.omit(df)$filename.x)),
+      yaxis = list(title = unique(na.omit(df)$filename.y))
+    )
+  
+  # Add abline with add_trace to plotly object
+  p3 <- p3 %>%
+    add_trace(
+      type = "scatter",
+      mode = "lines",
+      x = c(min(na.omit(df)$CumRainmm.x), max(na.omit(df)$CumRainmm.x)),
+      y = c(min(na.omit(df)$CumRainmm.x), max(na.omit(df)$CumRainmm.x)),
+      line = list(color = "blue", width = 1),
+      hoverinfo = "1:1"
+    )
+  
+  return(p3)
+}
 
   
 process_rain_data <- function(file_path, output_path_add = "processed"){
@@ -263,7 +308,7 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
       data <- read_otip_file(name, path_to_processed)
       # Check if "R1" or "R7" is in the file name at specific positions (e.g., at the beginning)
       #file_name <- basename(user_file_paths)
-      if (grepl("R1|R7", name)){
+      if (grepl("R1|R7|R4", name)){
         # Apply transformations based on file name
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.254)%>%
@@ -304,7 +349,29 @@ check_plot <- function(data_list, plot = 1) {
   if (plot == 1) { # default
     (plot1 <- first_quick_plot(result_df, ggtitle_text))
   } else (plot2 <- second_quick_plot(result_df, ggtitle_text))
-
   
-
+  
+  
 }
+
+
+# match first break point in R1, R4 or R7 To plot one pluviometer against the other
+match_breaks <- function(df) {
+  # Check if filename contains 'R1' or 'R7'
+  if (any(grepl("R1|R7|R4", df$filename))) {
+    # Find the first value in CumRainmm column different from 0 - first break
+    first_nonzero_index <- which(df$CumRainmm != 0)[1]
+    
+    # Extract the time series from the first non-zero value onwards
+    time_series <- df %>%
+      slice(first_nonzero_index:n()) %>%
+      mutate(order = row_number())%>%
+      select(order,filename, date, CumRainmm)
+    
+    return(time_series)
+  } else {
+    return(NULL)  # for filenames not containing 'R4' 'R1' or 'R7'
+  }
+}
+
+
