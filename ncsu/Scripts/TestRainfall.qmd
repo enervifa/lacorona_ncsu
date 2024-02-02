@@ -107,3 +107,5 @@ and plot 2
 ```{r makeplot2}
 check_plot(data_processed, plot = 2)
 ```
+
+Add a plot to compare pluviometers against each other?
