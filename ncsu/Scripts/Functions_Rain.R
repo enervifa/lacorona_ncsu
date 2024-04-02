@@ -83,7 +83,7 @@ read_otip_file <- function(name, path_to_file){
   data_out <- read_csv(paste0(path_to_file,"/",name))
   # make sure dates are working
   data_out <- data_out %>%
-    mutate(date = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
+    mutate(`Date and Time` = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
     # rename Difference to Event
     rename("Event" = "Difference")
   return(data_out)
@@ -156,58 +156,27 @@ second_quick_plot  <- function(df, ggtitle_text) {
 
 
 
-  
+#####################################################################
+#' process rain data main function
+#' 
+#' This is the main function to process the measured rainfall data
+#' @param filepath
+#' @param output_path_add text string for an additional path variable to move processed files
+#' @example 
+#' process_rain_data("../Rain")
+#' 
+#' @export
 process_rain_data <- function(file_path, output_path_add = "processed"){
   
   # step 1
   input <- read_user_input(file_path)
   # input is a list
-  # # Create empty lists to store user-provided file names and paths
-  # user_file_names <- list()
-  # user_file_paths  <- list()
-  # 
-  # # Prompt the user for file names until they press Enter
-  # while (TRUE) {
-  #   # Prompt the user for a file name
-  #   file <- readline("Enter a file name (or press Enter to finish): ")
-  #   # Check if the user pressed Enter (i.e., entered an empty string)
-  #   if (file == "") {
-  #     break  # Exit the loop if the user pressed Enter
-  #   }
-  #   
-  #   # Add the user-provided file name to the user_file_names list
-  #   user_file_names <- append(user_file_names, list(file))
-  #   # Add the corresponding file path to the user_file_paths list
-  #   user_file_paths <- append(user_file_paths, list(file))
-    
-    # ###CHECK LIST
-    # user_file_names
-    # user_file_paths
-  
+
     #browser()
     # Loop through each .csv file
     for (name in input$names) {
       data_process <- read_data_file(name, file_path)
-      # # Read the .csv file
-      # data <- read.csv(name, header = FALSE, sep = ",",skip=2)%>%
-      #   select(2:4,)
-      # 
-      # # Rename columns
-      # colnames(data) <- c("Date_Time", "Temp", "Event")
-      # 
-      # # Convert Date_Time to POSIXct format
-      # data <- data %>%
-      #   mutate(Date = mdy_hms(Date_Time, tz = "America/Argentina/Buenos_Aires"))%>%
-      #   # Sort the data by 'Event' column and then by 'Date_Time'
-      #   arrange(Event, Date_Time)%>%
-      #   # Select 'Date_Time' and 'Event' columns and remove rows with NAs (no data)
-      #   select(Date_Time, Event) %>%
-      #   na.omit(data)
-      #  browser()
-      # data1 <-data%>%
-      #   mutate(Difference = ifelse(Event >= lag(Event, default = first(Event)), Event - lag(Event, default = first(Event)), 0))%>%
-      #   select(Date_Time, Difference)
-      #  browser()
+ 
       # difference the events column
       data_process1 <- diff_data(data_process)
       
