@@ -1,5 +1,5 @@
 ---
-title: "Testinge merging data from flumes and rainfall"
+title: "Testing merging data from flumes and rainfall"
 format: html
 editor: visual
 ---
@@ -95,12 +95,12 @@ month_merged_df <- merge_data(month_summary_rain,
 
 With the merged data sets we can now plot the variables against each other.
 
-Starting with the 6 min datat
+Starting with the 6 min data
 
 ```{r plotting-6min}
 p <- merged_df %>%
   #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
-  ggplot(aes(`Date and Time`, Event)) + geom_bar(stat = "identity", fill = "blue") +
+  ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
   geom_line(aes(`Date and Time`, `Water Level, meters`), colour = "red") + theme_bw()
 ggplotly(p)
 
@@ -125,14 +125,50 @@ ggplotly(p1)
 ```{r plotting-month}
 p2 <- month_merged_df %>%
   #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
-  ggplot(aes(`Date and Time`, Event)) + geom_bar(stat = "identity", fill = "blue") +
-  geom_line(aes(`Date and Time`, `Water Level, meters`*100), colour = "red") + theme_bw() +
+  ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
+  geom_line(aes(`Date and Time`, `Water Level, meters`*1000), colour = "red") + theme_bw() +
   scale_y_continuous(
     # Features of the first axis
     name = "Event",
     # Add a second axis and specify its features
-    sec.axis = sec_axis( trans=~./100, name="Water Level in Meters")
+    sec.axis = sec_axis( trans=~./1000, name="Water Level in Meters")
   )
 #p1
 ggplotly(p2)
+```
+
+## Adding another file (ISCO)
+
+The next test is whether we can add a further file to the data. Reading in an isco velocity file
+
+```{r}
+isco <- read_flume_output(name = 
+                         "v3110119vel.csv_processed.csv",                    path_to_file = "../Flumes/processed")
+```
+
+Summarise this data to 6 min data
+
+```{r}
+test_summary_isco <- sum_fun(isco)
+```
+
+Now add this to the other two datasets
+
+```{r}
+merged_three_df <- merge_data(merged_df,test_summary_isco)
+```
+
+Now do the plotting
+
+```{r plotting3-6min}
+p3 <- merged_three_df %>%
+  pivot_longer(3:ncol(merged_three_df),values_to = "value", 
+               names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event*0.2)) + 
+  geom_bar(stat = "identity",fill = "blue") + 
+  geom_line(aes(`Date and Time`,value, colour =variable)) + 
+  theme_bw()
+ggplotly(p3)
+
+
 ```
