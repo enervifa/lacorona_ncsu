@@ -9,7 +9,7 @@
 ##################################################
 #' Read well file
 #' 
-#' Function to read the processed flume file back into a dataframe
+#' Function to read well file
 #' @param filename the file name to read in
 #' @param input_dir any additional path, defaults to "."
 #' @param coltypes column types, has a default to match current files
@@ -37,7 +37,7 @@ read_hobo_well <- function(filename, input_dir = "."  ,
     select(`Date and Time`,`Abs Pressure kPa`, `Temp, ?C`,
                                 `Water Level, meters` )
   
-  write_well(file_out,filename)
+  #write_well(file_out,filename)
   
   if (plotit == T) {
     p <- plot_well(file_out)
@@ -74,6 +74,69 @@ plot_well <- function(df) {
 #' @example
 write_well <- function(df, filename_in, path_out = "../Wells/Automatic/Processed") {
   write_csv(df, paste0(path_out,"/",filename_in,"_processed.csv"))
+}
+
+##################################################
+#' Read baro file
+#' 
+#' Function to read the baro file
+#' @param filename the file name to read in
+#' @param input_dir any additional path, defaults to "."
+#' @param coltypes column types, has a default to match current baro file
+#' @param skip defaults to 1
+#' 
+#' @example 
+#' df1 <- read_hobo_baro(filename = "N10111219.csv", 
+#'                    input_dir = "../Wells/Automatic")
+#' 
+#' @export
+read_hobo_baro <- function(filename, input_dir = "."  , 
+                           coltypes = cols("d","c","d","d","d","d","c","c","c","c"),
+                           skip = 1) {
+  browser()
+  file_read <- read_csv(paste(input_dir,filename,sep="/"),
+                        skip = skip, col_types = coltypes)
+  
+  colnames(file_read)[3:6] <- c("Abs Pressure kPa", "Temp, ?C",
+                                "Barom Pressure kPa",
+                                "Water Level, meters")
+  file_read <- file_read %>%
+    mutate(`Date and Time` = mdy_hms(`Date Time, GMT-03:00`)) 
+  
+  file_out <- file_read %>%
+    select(`Date and Time`,`Barom Pressure kPa`)
+
+  return(list(file = file_out))
+}
+
+#############################
+#' merge baro and well
+#' 
+#' Merge the baro pressure and well data to process
+#' @param baro_df file with baro pressure data
+#' @param well_df file with waterlevel/pressure data
+#' @example 
+#' 
+Merge_baro_well <- function(baro_df, well_df) {
+  
+}
+
+#############################
+#' read manual well
+#' 
+#' read the manual well files
+#' @param filename the file name to read in
+#' @param input_dir any additional path, defaults to "."
+#' @example
+#' 
+read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
+ # foo <- file(paste(input_dir, filename, sep ="/"))
+  data <- read_docx(paste(input_dir, filename, sep ="/"))
+#  close(foo)
+browser()  
+line_well <- grep("Well", data) 
+
+  
 }
 
 

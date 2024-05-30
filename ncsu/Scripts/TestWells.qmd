@@ -5,23 +5,10 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## Introduction
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+This notebook demonstrates different functions that have been developed to analyse and check the field data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
 
-## Running Code
+Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+This document specifically focuses on the reading and processing of well files and adding the baro file data.
