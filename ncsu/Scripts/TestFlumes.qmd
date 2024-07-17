@@ -31,7 +31,7 @@ The functions are stored in the scripts folder, the same folder as the code vers
 source("Functions_Flumes.R") 
 ```
 
-testing the functions
+## testing the functions
 
 Read in the files
 
@@ -84,7 +84,7 @@ There are two types of ISCO files, one with velocity values, the other with leve
 
 The `read_isco` function has been adjusted from the original to differentiate between these two
 
-First test the `isco_level` instrument v311o119csv.csv
+First test the `isco_level` instrument v3110119csv.csv
 
 ```{r info-isco}
 test_info_isco <- read_flume_files(file_path = "../flumes")

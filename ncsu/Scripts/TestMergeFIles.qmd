@@ -1,0 +1,174 @@
+---
+title: "Testing merging data from flumes and rainfall"
+format: html
+editor: visual
+---
+
+## Introduction
+
+This notebook demonstrates the different functions that have been developed to analyse and check the field data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
+
+Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
+
+This document specifically focuses on the merging of different files originating from the rainfall and flume raw data. This will allow providing 6 minute, daily and monthly summaries.
+
+## Packages
+
+To be able to run this notebook, the following R packages should be available
+
+```{r message = FALSE}
+library(tidyverse)  
+library(plotly) 
+```
+
+## Loading the developed functions
+
+The functions are stored in the scripts folder, the same folder as the code version of this file (the \*.qmd file).
+
+```{r loadfunctions}
+source("Functions_merge.R") 
+```
+
+## Testing the functions
+
+We can now start testing the functions.
+
+Read in two processed files (rainfall and flume data)
+
+```{r}
+rain <- read_otip_file(name = 
+                         "OTIP_r4110119.csv",                    path_to_file = "../rain/processed")
+
+flume <- read_flume_output(name = 
+                         "S1110119_processed.csv",                    path_to_file = "../Flumes/processed")
+
+```
+
+## Summarising
+
+Test summarising the files by 6 min and day before merging. This is to align the timesteps between the different loggers. As `"6 min"` is the default, there is no need for a timestep argument.
+
+Events are summed across summary times, while flume data would be taking the mean value of velocity, height and flow.
+
+```{r summary-test}
+
+test_summary_rain <- sum_fun(rain)
+
+test_summary_flume <- sum_fun(flume)
+
+```
+
+We will now merge these two files.
+
+In this case the rainfall file should be df1, as this has the most dense observations. The function uses full_join to make sure also keep all the observations in df2 (even if there is no equivalent time in df1
+
+```{r mergetest}
+merged_df <- merge_data(test_summary_rain,test_summary_flume)
+
+```
+
+## Summarising across days and months
+
+We can now also test the summaries across days and months. In this case the timestep argument needs to be defined as `"day"` or `"month"`.
+
+```{r summary-long}
+
+day_summary_rain <- sum_fun(rain, timestep = "day")
+
+day_summary_flume <- sum_fun(flume, timestep = "day")
+
+month_summary_rain <- sum_fun(rain, timestep = "month")
+
+month_summary_flume <- sum_fun(flume, timestep = "month")
+```
+
+These can also be merged
+
+```{r merge-long}
+day_merged_df <- merge_data(day_summary_rain,day_summary_flume)
+month_merged_df <- merge_data(month_summary_rain,
+                              month_summary_flume)
+
+```
+
+## Graphs
+
+With the merged data sets we can now plot the variables against each other.
+
+Starting with the 6 min data
+
+```{r plotting-6min}
+p <- merged_df %>%
+  #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
+  geom_line(aes(`Date and Time`, `Water Level, meters`), colour = "red") + theme_bw()
+ggplotly(p)
+
+
+```
+
+```{r plotting-day}
+p1 <- day_merged_df %>%
+  #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event)) + geom_bar(stat = "identity", fill = "blue") +
+  geom_line(aes(`Date and Time`, `Water Level, meters`*100), colour = "red") + theme_bw() +
+  scale_y_continuous(
+    # Features of the first axis
+    name = "Event",
+    # Add a second axis and specify its features
+    sec.axis = sec_axis( trans=~./100, name="Water Level in Meters")
+  )
+#p1
+ggplotly(p1)
+```
+
+```{r plotting-month}
+p2 <- month_merged_df %>%
+  #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
+  geom_line(aes(`Date and Time`, `Water Level, meters`*1000), colour = "red") + theme_bw() +
+  scale_y_continuous(
+    # Features of the first axis
+    name = "Event",
+    # Add a second axis and specify its features
+    sec.axis = sec_axis( trans=~./1000, name="Water Level in Meters")
+  )
+#p1
+ggplotly(p2)
+```
+
+## Adding another file (ISCO)
+
+The next test is whether we can add a further file to the data. Reading in an isco velocity file
+
+```{r}
+isco <- read_flume_output(name = 
+                         "v3110119vel.csv_processed.csv",                    path_to_file = "../Flumes/processed")
+```
+
+Summarise this data to 6 min data
+
+```{r}
+test_summary_isco <- sum_fun(isco)
+```
+
+Now add this to the other two datasets
+
+```{r}
+merged_three_df <- merge_data(merged_df,test_summary_isco)
+```
+
+Now do the plotting
+
+```{r plotting3-6min}
+p3 <- merged_three_df %>%
+  pivot_longer(3:ncol(merged_three_df),values_to = "value", 
+               names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event*0.2)) + 
+  geom_bar(stat = "identity",fill = "blue") + 
+  geom_line(aes(`Date and Time`,value, colour =variable)) + 
+  theme_bw()
+ggplotly(p3)
+
+
+```

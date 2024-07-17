@@ -1,7 +1,6 @@
 # Process flumes data
 # not tested
-# tested 16/12/2023 only things missing is a function to process files from a list
-
+# tested
 
 require(tidyverse)
 require(plotly)
@@ -302,7 +301,100 @@ file_process <- function(file_name, file_path, instrument, output_dir) {
 # 
 # 
 
+##################################################
+#' Read processed flume file
+#' 
+#' Function to read the processed flume file back into a dataframe
+#' @param name the file name to read in
+#' @aram path_to_file any additional path, defaults to "."
+#' @example 
+#' df1 <- read_otip_file(name = "r4111219_processed.csv", 
+#'                    path_to_file = "../Flumes/processed")
+#' 
+#' @export
+read_flume_output <- function(name, path_to_file="."){
+  data_out <- read_csv(paste0(path_to_file,"/",name))
+  # make sure dates are working
+  data_out <- data_out %>%
+    mutate(`Date and Time` = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires"))
+  return(data_out)
+}
 
+###############################################
+#'Flume Hobo plotting function
+#'
+#'Function to plot the flume results for the hobo data logger
+#'@param df a data frame/tibble as input
+#'@param ggtitle_text_in character, the text for the plot title
+#'
+#'@return a ggplot object
+#'
+#'@examples 
+#'NA
+#'
+#'@export
+flume_hobo_plot <- function(df, ggtitle_text_in) {
+  p1 <- df %>%
+    na.omit() %>%
+    pivot_longer(cols = `Temp, ?C`:`Water Level, meters`,
+                 names_to = "Measures", values_to ="values") %>%
+    ggplot(aes(`Date and Time`,values, colour = Measures)) +
+    geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")+
+    ggtitle(ggtitle_text_in) + theme_classic()
+  
+  return(p1)
+}
+
+###############################################
+#'Flume Stevens plotting function
+#'
+#'Function to plot the flume results for the hoboU12- Stevens logger
+#'@param df a data frame/tibble as input
+#'@param ggtitle_text character, the text for the plot title
+#'
+#'@return a ggplot object
+#'
+#'@examples 
+#'NA
+#'
+#'@export
+flume_stevens_plot <- function(df, ggtitle_text_in) {
+  p1 <-   df %>%
+      ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
+      theme_classic() + ggtitle(ggtitle_text_in)
+  # return the plot object
+  return(p1)
+}
+
+###############################################
+#'Flume isco plotting function
+#'
+#'Function to plot the flume results for the hoboU12- Stevens logger
+#'@param df a data frame/tibble as input
+#'@param ggtitle_text character, the text for the plot title
+#'@param velocity whether velocity needs to be plotted
+#'
+#'@return a ggplot object
+#'
+#'@examples 
+#'NA
+#'
+#'@export
+flume_isco_plot <- function(df, ggtitle_text, velocity_in) {
+  if (velocity_in) {
+    p1 <- df %>%
+      na.omit() %>%
+      ggplot(aes(`Date and Time`,`Velocity (m/s)`)) + geom_line() +
+      theme_classic() + ggtitle(ggtitle_text)
+    return(p1)
+  } else {
+    p1 <- df %>%
+      na.omit() %>%
+      ggplot(aes(`Date and Time`,`Level (ft)`)) + geom_line() +
+      theme_classic() + ggtitle(ggtitle_text)
+    return(p1)
+  }
+}
 
 # --- HOBOU20 ----
 ################
@@ -334,22 +426,17 @@ read_hobou20 <- function(filename, input_dir ,
   file_out <- file_read %>%
     select(`Date and Time`, `Temp, ?C`,
            `Water Level, meters`)
+  # write file to directory  
+  #browser()
+  location <- str_locate(filename, ".csv")
+  filename_out <- str_sub(filename, 0,location[1]-1)
   
   write_csv(file_out %>% select(`Date and Time`,
                                 `Water Level, meters`), 
-            paste0(outdir,"/",filename, "_processed.csv"))
+            paste0(outdir,"/",filename_out, "_processed.csv"))
   
   if (plotit == T) {
-    p <- file_out %>%
-      na.omit() %>%
-      pivot_longer(cols = `Temp, ?C`:`Water Level, meters`,
-                   names_to = "Measures", values_to ="values") %>%
-      ggplot(aes(`Date and Time`,values, colour = Measures)) +
-      geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")+
-      ggtitle(ggtitle_text) + theme_classic()
-    #print(p)
-    #browser()
-    #ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
+    p <- flume_hobo_plot(file_out, ggtitle_text)
     return(p)
 
   } else {
@@ -411,19 +498,18 @@ read_stevens <- function(filename, file_prefix, input_dir,
   data_out <- data_out %>%
     select(`Date and Time`,`Water Level, meters`)
   # write file to output directory
+  location <- str_locate(filename, ".csv")
+  filename_out <- str_sub(filename, 0,location[1]-1)
+  
   write_csv(data_out, 
-            paste0(outdir,"/",filename, "_processed.csv"))
+            paste0(outdir,"/",filename_out, "_processed.csv"))
   
   #  }
+  ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
+  
   #browser()
   if (plotit == T) {
-    ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
-    p <-   data_out %>%
-      ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
-      theme_classic() + ggtitle(ggtitle_text)
-    # print(p)
-    # ggsave(file.path(outdir, filename, "_plot.png"), width = 10, height = 8)
-    # return the plot object
+    p <- flume_stevens_plot(data_out, ggtitle_text)
     return(p)
   } else {
   return(data_out)
@@ -472,27 +558,19 @@ read_isco <- function(filename, input_dir ,
   }
 
   # write file to output directory
+  location <- str_locate(filename, ".csv")
+  filename_out <- str_sub(filename, 0,location[1]-1)
+  
   write_csv(data_out, 
-            paste0(outdir,"/",filename, "_processed.csv"))
+            paste0(outdir,"/",filename_out, "_processed.csv"))
+
+  ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
   #browser()
     
   if (plotit == T) {
-    ggtitle_text <- paste("Flume Data Quick Check (File Name:", filename,")")
-    if (velocity) {
-      p <- data_out %>%
-         na.omit() %>%
-        ggplot(aes(`Date and Time`,`Velocity (m/s)`)) + geom_line() +
-        theme_classic() + ggtitle(ggtitle_text)
-      return(p)
-    } else {
-      p <- data_out %>%
-      na.omit() %>%
-      ggplot(aes(`Date and Time`,`Level (ft)`)) + geom_line() +
-      theme_classic() + ggtitle(ggtitle_text)
-      return(p)
-    }
+    p <- flume_isco_plot(data_out, ggtitle_text, velocity)
+    return(p)
   } else return(data_out)
-
 }
 
 # auxillary function to deal with a.m. and p.m.

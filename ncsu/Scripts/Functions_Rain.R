@@ -83,7 +83,7 @@ read_otip_file <- function(name, path_to_file){
   data_out <- read_csv(paste0(path_to_file,"/",name))
   # make sure dates are working
   data_out <- data_out %>%
-    mutate(date = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
+    mutate(`Date and Time` = ymd_hms(Date, tz = "America/Argentina/Buenos_Aires")) %>%
     # rename Difference to Event
     rename("Event" = "Difference")
   return(data_out)
@@ -98,7 +98,6 @@ diff_data <- function(data) {
   return(data1)
 }
 
-##############
 ###############################################
 ###############################################
 #'first plotting function
@@ -155,104 +154,29 @@ second_quick_plot  <- function(df, ggtitle_text) {
 
 }
 
-###############################################
-#'third plotting function
-#'
-#'@param df a data frame/tibble as input
-#'
-#'@return a plotly object
-#'
-#'@examples 
-#'NA
-#'
-#'@export
 
-third_quick_plot <- function(df) {
-  
-  # Create the plot
-  quickplot_rain3 <- ggplot(na.omit(df), aes(x = CumRainmm.x, y = CumRainmm.y)) +
-    geom_point(size=0.5) +
-    theme_minimal() +
-    theme_light() +
-    theme(legend.position = "top")#+
-    #abline(h = 0, v = 0, col = "red", lty = 2) +  # Add abline
-  
 
-  # Convert the plot to a Plotly object 
-  p3 <- ggplotly(quickplot_rain3)
-  
-  p3 <- p3 %>%
-    layout(
-      xaxis = list(title = unique(na.omit(df)$filename.x)),
-      yaxis = list(title = unique(na.omit(df)$filename.y))
-    )
-  
-  # Add abline with add_trace to plotly object
-  p3 <- p3 %>%
-    add_trace(
-      type = "scatter",
-      mode = "lines",
-      x = c(min(na.omit(df)$CumRainmm.x), max(na.omit(df)$CumRainmm.x)),
-      y = c(min(na.omit(df)$CumRainmm.x), max(na.omit(df)$CumRainmm.x)),
-      line = list(color = "blue", width = 1),
-      hoverinfo = "1:1"
-    )
-  
-  return(p3)
-}
-
-  
+#####################################################################
+#' process rain data main function
+#' 
+#' This is the main function to process the measured rainfall data
+#' @param filepath
+#' @param output_path_add text string for an additional path variable to move processed files
+#' @example 
+#' process_rain_data("../Rain")
+#' 
+#' @export
 process_rain_data <- function(file_path, output_path_add = "processed"){
   
   # step 1
   input <- read_user_input(file_path)
   # input is a list
-  # # Create empty lists to store user-provided file names and paths
-  # user_file_names <- list()
-  # user_file_paths  <- list()
-  # 
-  # # Prompt the user for file names until they press Enter
-  # while (TRUE) {
-  #   # Prompt the user for a file name
-  #   file <- readline("Enter a file name (or press Enter to finish): ")
-  #   # Check if the user pressed Enter (i.e., entered an empty string)
-  #   if (file == "") {
-  #     break  # Exit the loop if the user pressed Enter
-  #   }
-  #   
-  #   # Add the user-provided file name to the user_file_names list
-  #   user_file_names <- append(user_file_names, list(file))
-  #   # Add the corresponding file path to the user_file_paths list
-  #   user_file_paths <- append(user_file_paths, list(file))
-    
-    # ###CHECK LIST
-    # user_file_names
-    # user_file_paths
-  
+
     #browser()
     # Loop through each .csv file
     for (name in input$names) {
       data_process <- read_data_file(name, file_path)
-      # # Read the .csv file
-      # data <- read.csv(name, header = FALSE, sep = ",",skip=2)%>%
-      #   select(2:4,)
-      # 
-      # # Rename columns
-      # colnames(data) <- c("Date_Time", "Temp", "Event")
-      # 
-      # # Convert Date_Time to POSIXct format
-      # data <- data %>%
-      #   mutate(Date = mdy_hms(Date_Time, tz = "America/Argentina/Buenos_Aires"))%>%
-      #   # Sort the data by 'Event' column and then by 'Date_Time'
-      #   arrange(Event, Date_Time)%>%
-      #   # Select 'Date_Time' and 'Event' columns and remove rows with NAs (no data)
-      #   select(Date_Time, Event) %>%
-      #   na.omit(data)
-      #  browser()
-      # data1 <-data%>%
-      #   mutate(Difference = ifelse(Event >= lag(Event, default = first(Event)), Event - lag(Event, default = first(Event)), 0))%>%
-      #   select(Date_Time, Difference)
-      #  browser()
+ 
       # difference the events column
       data_process1 <- diff_data(data_process)
       
@@ -308,7 +232,7 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
       data <- read_otip_file(name, path_to_processed)
       # Check if "R1" or "R7" is in the file name at specific positions (e.g., at the beginning)
       #file_name <- basename(user_file_paths)
-      if (grepl("R1|R7|R4", name)){
+      if (grepl("R1|R7", name)){
         # Apply transformations based on file name
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.254)%>%
@@ -349,29 +273,8 @@ check_plot <- function(data_list, plot = 1) {
   if (plot == 1) { # default
     (plot1 <- first_quick_plot(result_df, ggtitle_text))
   } else (plot2 <- second_quick_plot(result_df, ggtitle_text))
+
   
-  
-  
+
 }
-
-
-# match first break point in R1, R4 or R7 To plot one pluviometer against the other
-match_breaks <- function(df) {
-  # Check if filename contains 'R1' or 'R7'
-  if (any(grepl("R1|R7|R4", df$filename))) {
-    # Find the first value in CumRainmm column different from 0 - first break
-    first_nonzero_index <- which(df$CumRainmm != 0)[1]
-    
-    # Extract the time series from the first non-zero value onwards
-    time_series <- df %>%
-      slice(first_nonzero_index:n()) %>%
-      mutate(order = row_number())%>%
-      select(order,filename, date, CumRainmm)
-    
-    return(time_series)
-  } else {
-    return(NULL)  # for filenames not containing 'R4' 'R1' or 'R7'
-  }
-}
-
 
