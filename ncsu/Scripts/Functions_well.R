@@ -36,7 +36,11 @@ read_hobo_well <- function(filename, input_dir = "."  ,
   file_out <- file_read %>%
     select(`Date and Time`,`Abs Pressure kPa`, `Temp, ?C`,
                                 `Water Level, meters` ) %>%
-    na.omit()
+    # remove missing values
+    na.omit() %>%
+    # remove first two hours as these are often wrong
+    filter(`Date and Time` > min(`Date and Time`) + 2)
+  
   
   #write_well(file_out,filename)
   
@@ -135,10 +139,21 @@ read_hobo_baro <- function(filename, input_dir = "."  ,
 Merge_baro_well <- function(baro_df, well_df) {
   # First we need to summarise the barometric pressure over the hour that the
   # well measurements are taken
-  browser()
-  NA_values_baro <- baro_df[is.na(`Barom Pressure kPa`)==T,]
+ # browser()
+  baro_df_test <- baro_df %>%
+    mutate(Datehour = round(`Date and Time`, unit = 'hour')) %>%
+    group_by(DateTime = Datehour) %>%
+    summarise(`Barom Pressure kPa` = mean(`Barom Pressure kPa`, na.rm =T))
+  print(baro_df_test)
   
+  merge_dfs <- left_join(baro_df_test, well_df %>% 
+                           mutate(DateTime = round(`Date and Time`, 
+                                                   unit = 'hour')))
+  # make a quick plot
+  p <- merge_dfs %>% ggplot(aes(`Barom Pressure kPa`, `Abs Pressure kPa`)) + 
+    geom_point() + geom_smooth(method = "lm") + theme_bw()
   
+  return(list(data = merge_dfs, plot = p))
   
 }
 
