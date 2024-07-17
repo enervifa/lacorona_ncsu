@@ -13,7 +13,7 @@ Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
 
 This document specifically focuses on the reading and processing of well files and adding the baro file data.
 
-## packages
+## Packages
 
 To be able to run this notebook, the following R packages should be available
 
@@ -32,7 +32,7 @@ The functions are stored in the scripts folder, the same folder as the code vers
 source("Functions_well.R") 
 ```
 
-## testing the functions
+## Testing the functions
 
 Read in the files from the directory
 
@@ -41,7 +41,7 @@ Read in the files from the directory
 well_files <- list.files("../wells/automatic", pattern = ".csv")
 ```
 
-Read in 1 file
+Read in 1 file, the first two lines (hours) are deleted as they are often related to the sampling action
 
 ```{r readOnefile}
 
@@ -77,7 +77,7 @@ test the plot
 ggplotly(test_merge$plot)
 ```
 
-Different plot
+Different plot in time of the underlying data
 
 ```{r}
 p2 <- test_merge$data %>%

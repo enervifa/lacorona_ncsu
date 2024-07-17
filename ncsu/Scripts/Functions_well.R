@@ -36,7 +36,11 @@ read_hobo_well <- function(filename, input_dir = "."  ,
   file_out <- file_read %>%
     select(`Date and Time`,`Abs Pressure kPa`, `Temp, ?C`,
                                 `Water Level, meters` ) %>%
-    na.omit()
+    # remove missing values
+    na.omit() %>%
+    # remove first two hours as these are often wrong
+    filter(`Date and Time` > min(`Date and Time`) + 2)
+  
   
   #write_well(file_out,filename)
   
