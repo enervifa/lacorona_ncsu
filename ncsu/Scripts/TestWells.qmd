@@ -63,3 +63,29 @@ Testing reading in the same files but plotting the 2 minute data abs pressure ba
 test_well_baro <- read_hobo_baro(paste0("../wells/automatic/",well_files[1]))
 ggplotly(test_well_baro$plot)
 ```
+
+## Testing merging files
+
+```{r}
+# baro dataframe first in the function
+test_merge <- Merge_baro_well(test_well_baro$file, test_well$file)
+```
+
+test the plot
+
+```{r plot_merge}
+ggplotly(test_merge$plot)
+```
+
+Different plot
+
+```{r}
+p2 <- test_merge$data %>%
+  pivot_longer(c(`Abs Pressure kPa`, `Barom Pressure kPa`), 
+               values_to = "pressure", 
+               names_to = "type") %>%
+  ggplot(aes(`Date and Time`,pressure, colour = type)) + geom_line() +
+  theme_bw()
+
+ggplotly(p2)
+```
