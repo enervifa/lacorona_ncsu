@@ -35,14 +35,15 @@ read_hobo_well <- function(filename, input_dir = "."  ,
   
   file_out <- file_read %>%
     select(`Date and Time`,`Abs Pressure kPa`, `Temp, ?C`,
-                                `Water Level, meters` )
+                                `Water Level, meters` ) %>%
+    na.omit()
   
   #write_well(file_out,filename)
   
   if (plotit == T) {
     p <- plot_well(file_out)
     #print(p)
-  }
+  } else p <- NA
   return(list(file = file_out, plot = p))
 }
 
@@ -52,15 +53,25 @@ read_hobo_well <- function(filename, input_dir = "."  ,
 #' 
 #' Function to plot the well output
 #' @param df dataframe to plot
+#' @param baro switch (true/false) for baro fiel plotting
 #' @example
 #' 
-plot_well <- function(df) {
-  p <- df %>%
-    na.omit() %>%
-    pivot_longer(cols = 2:ncol(df),
-                 names_to = "Measures", values_to ="values") %>%
-    ggplot(aes(`Date and Time`,values, colour = Measures)) +
-    geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free")
+plot_well <- function(df, baro = FALSE) {
+  if (baro  == F) {
+    p <- df %>%
+      na.omit() %>%
+      pivot_longer(cols = 2:ncol(df),
+                   names_to = "Measures", values_to ="values") %>%
+      ggplot(aes(`Date and Time`,values, colour = Measures)) +
+      geom_line() + facet_wrap(~Measures, ncol = 2, scales = "free") + 
+      theme_bw()
+    
+  } else {
+    p <- df %>%
+      na.omit() %>%
+      ggplot(aes(`Date and Time`,`Barom Pressure kPa`)) +
+      geom_line(colour = "blue") + theme_bw()
+  }
   return(p)
 }
 
@@ -86,14 +97,14 @@ write_well <- function(df, filename_in, path_out = "../Wells/Automatic/Processed
 #' @param skip defaults to 1
 #' 
 #' @example 
-#' df1 <- read_hobo_baro(filename = "N10111219.csv", 
+#' df1 <- read_hobo_baro(filename = "N11111219.csv", 
 #'                    input_dir = "../Wells/Automatic")
 #' 
 #' @export
 read_hobo_baro <- function(filename, input_dir = "."  , 
                            coltypes = cols("d","c","d","d","d","d","c","c","c","c"),
-                           skip = 1) {
-  browser()
+                           skip = 1, plotit = T) {
+  #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         skip = skip, col_types = coltypes)
   
@@ -106,11 +117,15 @@ read_hobo_baro <- function(filename, input_dir = "."  ,
   file_out <- file_read %>%
     select(`Date and Time`,`Barom Pressure kPa`)
 
-  return(list(file = file_out))
+  if (plotit == T) {
+    p <- plot_well(file_out, baro = T)
+    #print(p)
+  } else p <- NA
+  return(list(file = file_out, plot = p))
 }
 
 #############################
-#' merge baro and well
+#' merge baro and well at hourly time steps
 #' 
 #' Merge the baro pressure and well data to process
 #' @param baro_df file with baro pressure data
@@ -118,6 +133,12 @@ read_hobo_baro <- function(filename, input_dir = "."  ,
 #' @example 
 #' 
 Merge_baro_well <- function(baro_df, well_df) {
+  # First we need to summarise the barometric pressure over the hour that the
+  # well measurements are taken
+  browser()
+  NA_values_baro <- baro_df[is.na(`Barom Pressure kPa`)==T,]
+  
+  
   
 }
 

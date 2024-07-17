@@ -12,3 +12,54 @@ This notebook demonstrates different functions that have been developed to analy
 Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
 
 This document specifically focuses on the reading and processing of well files and adding the baro file data.
+
+## packages
+
+To be able to run this notebook, the following R packages should be available
+
+```{r message = FALSE}
+library(tidyverse)
+library(plotly)
+# library(readxl)
+# library(htmlwidgets)
+```
+
+## Loading the developed functions
+
+The functions are stored in the scripts folder, the same folder as the code version of this file (the \*.qmd file).
+
+```{r loadfunctions}
+source("Functions_well.R") 
+```
+
+## testing the functions
+
+Read in the files from the directory
+
+```{r read-files}
+#getwd()
+well_files <- list.files("../wells/automatic", pattern = ".csv")
+```
+
+Read in 1 file
+
+```{r readOnefile}
+
+test_well <- read_hobo_well(paste0("../wells/automatic/",well_files[1]), plotit = T)
+ggplotly(test_well$plot)
+```
+
+You can also look at the raw data
+
+```{r welldata}
+test_well$file
+```
+
+### Reading barometer pressures from the automatic file
+
+Testing reading in the same files but plotting the 2 minute data abs pressure barom data
+
+```{r}
+test_well_baro <- read_hobo_baro(paste0("../wells/automatic/",well_files[1]))
+ggplotly(test_well_baro$plot)
+```
