@@ -71,7 +71,7 @@ ggplotly(test_well_baro$plot)
 test_merge <- Merge_baro_well(test_well_baro$file, test_well$file)
 ```
 
-test the plot
+test the plot, this is summarised hourly data
 
 ```{r plot_merge}
 ggplotly(test_merge$plot)

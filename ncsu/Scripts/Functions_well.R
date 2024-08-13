@@ -3,7 +3,7 @@
 
 # Functions to read in all the water and well data
 
-#require(tidyverse)
+require(tidyverse)
 #require(lubridate)
 
 ##################################################
@@ -166,16 +166,35 @@ Merge_baro_well <- function(baro_df, well_df) {
 #' @example
 #' 
 read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
- # foo <- file(paste(input_dir, filename, sep ="/"))
-  data <- read_docx(paste(input_dir, filename, sep ="/"))
+  require(readtext) # https://cran.r-project.org/web/packages/readtext/vignettes/readtext_vignette.html#microsoft-word-files-.doc-.docx
+  browser()  
+  data <- readtext(paste(input_dir, filename, sep ="/"), encoding = "utf8")
 #  close(foo)
-browser()  
-line_well <- grep("Well", data) 
+  #https://rstudio.github.io/cheatsheets/html/strings.html#join-and-split
+  text_in_file <- data$text
+  line_well <- str_locate_all(text_in_file,"Data")
+  dates <- tibble(dates = rep(ymd("sys.Date()"), nrow(line_well[[1]])))
+  for (i in 1:nrow(line_well[[1]])) {
+      dates$dates[i] <- dmy(str_sub(text_in_file,line_well[[1]][i,2]+3,
+                              line_well[[1]][i,2]+12))
+    }
 
+  well_data_loc <- str_locate_all(text_in_file,"Wells")
+  Rain_loc <- str_locate_all(text_in_file,"Rain\n")
+  well_data <- str_sub(text_in_file,well_data_loc[[1]][1,2]+2,Rain_loc[[1]][1,1]-1)
+  test <- str_split(well_data, "\n")
+  test2 <- test[[1]][!str_starts(test[[1]],"Manual")]
+  test3 <- test2[2:(length(test2)-1)]
+  matrix(test3,length(test3)/3,3)
+  #well_data_vec <- matrix(str_split(well_data, "\n"),3,length(well_data)/3)
   
+print(dates)
+
+
 }
 
-
+#testing
+read_manual_well("Planilla cuenca 111219.docx")
 
 # # testing
 # read_dir <- "SampleFiles/Wells/Automatic"
