@@ -158,6 +158,58 @@ Merge_baro_well <- function(baro_df, well_df) {
 }
 
 #############################
+#' extract well data in document
+#' 
+#' extract the section from the document that has well data
+#' put into a tibble
+#' There are two sections in the document
+#' @param well_data_start start and finish locations in the text with the data
+#' @param text_in all the text from the document
+#' @param text_string text_string uniquely indicating a row of well data ("N.")
+#' @example
+#' 
+extract_well_sec <- function(well_data_start, text_in, text_string) {
+  well_data <- str_sub(text_in, well_data_start[1]+2,well_data_start[2]-1)
+  # the character string with the well data
+  well_text <- str_split(well_data, "\n")
+  # the names/locations of the wells
+  grab <- unlist(str_locate(well_text[[1]], text_string))[,1]
+  # the locations of the data that is not the well names
+  non_wells <- (as.numeric(attr(na.omit(grab),"na.action")))
+  # the locations for all the well names
+  loc_well <- seq(1:length(well_text[[1]]))[-non_wells]
+  # extract the well names and the data
+  grab_well <- tibble(Well = well_text[[1]][loc_well], 
+                      Depth = well_text[[1]][loc_well+1])
+  # now need to extract this for both dates
+  return(grab_well)
+}
+
+
+#############################
+#' find data in document
+#' 
+#' Find the section from the document that has feature data
+#' @param text_in all the text from the document
+#' @param feature_1 Feature that you want to fin
+#' @param feature_2 Following feature
+#' @example
+#' 
+doc_data_find <- function(text_in, feature_1, feature_2) {
+  
+  # find the start of the data from the sheet
+  feature1_find <- str_locate_all(text_in,feature_1)
+  # find the start of the next data, locator in the sheet
+  feature2_find <- str_locate_all(text_in,feature_2)
+  # the sections of the document with the well data
+  data_section <- cbind(feature1_find[[1]][,2],feature2_find[[1]][,1]-1)
+  
+  return(data_section)
+}
+
+
+
+#############################
 #' read manual well
 #' 
 #' read the manual well files
@@ -167,35 +219,44 @@ Merge_baro_well <- function(baro_df, well_df) {
 #' 
 read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
   require(readtext) # https://cran.r-project.org/web/packages/readtext/vignettes/readtext_vignette.html#microsoft-word-files-.doc-.docx
-  browser()  
-  data <- readtext(paste(input_dir, filename, sep ="/"), encoding = "utf8")
-#  close(foo)
-  #https://rstudio.github.io/cheatsheets/html/strings.html#join-and-split
-  text_in_file <- data$text
+  #browser()  
+  # read in the file
+  text_in_file <- readtext(paste(input_dir, filename, sep ="/"), 
+                           encoding = "utf8")$text
+  # find the dates on the sheets
   line_well <- str_locate_all(text_in_file,"Data")
-  dates <- tibble(dates = rep(ymd("sys.Date()"), nrow(line_well[[1]])))
+  dates <- tibble(dates = rep(ymd(Sys.Date()), nrow(line_well[[1]])))
   for (i in 1:nrow(line_well[[1]])) {
-      dates$dates[i] <- dmy(str_sub(text_in_file,line_well[[1]][i,2]+3,
+      dates$dates[i] <- dmy(str_sub(text_in_file,line_well[[1]][i,2]+1,
                               line_well[[1]][i,2]+12))
     }
-
-  well_data_loc <- str_locate_all(text_in_file,"Wells")
-  Rain_loc <- str_locate_all(text_in_file,"Rain\n")
-  well_data <- str_sub(text_in_file,well_data_loc[[1]][1,2]+2,Rain_loc[[1]][1,1]-1)
-  test <- str_split(well_data, "\n")
-  test2 <- test[[1]][!str_starts(test[[1]],"Manual")]
-  test3 <- test2[2:(length(test2)-1)]
-  matrix(test3,length(test3)/3,3)
-  #well_data_vec <- matrix(str_split(well_data, "\n"),3,length(well_data)/3)
+  #-----------------------------
+  # Find the data from the Wells
+  well_data_section <- doc_data_find(text_in = text_in_file,
+                                     feature_1 = "Wells",
+                                     feature_2 = "Rain\n")
   
-print(dates)
+  well_data <- list()
+  # put the well tables in the list
+  for (i in 1:nrow(well_data_section)) {
+    well_data[[i]] <- extract_well_sec(well_data_start = well_data_section[i,], 
+                                       text_in = text_in_file, 
+                                       text_string = "N.")
+    well_data[[i]] <- well_data[[i]] %>%
+      mutate(Date = dates$dates[i])
+  }
+  #browser()  
+  
+  # combine the list and output
+  Out <- bind_rows(well_data)
+  return(Out)
 
 
 }
 
 #testing
-read_manual_well("Planilla cuenca 111219.docx")
-
+well_test <- read_manual_well("Planilla cuenca 111219.docx")
+well_test
 # # testing
 # read_dir <- "SampleFiles/Wells/Automatic"
 # filenames <- dir(path = read_dir, pattern = ".csv")
