@@ -20,8 +20,7 @@ To be able to run this notebook, the following R packages should be available
 ```{r message = FALSE}
 library(tidyverse)
 library(plotly)
-# library(readxl)
-# library(htmlwidgets)
+library(readtext)
 ```
 
 ## Loading the developed functions
@@ -88,4 +87,69 @@ p2 <- test_merge$data %>%
   theme_bw()
 
 ggplotly(p2)
+```
+
+## Reading the manual records (Planillas)
+
+The first step is to convert the \*.doc files into *\**.docx files. We used [the freeware multidoc converter](http://www.multidoc-converter.com/en/index.html) which seems to work quite well.
+
+Then we can use the package `readtext` to read the files.
+
+There are a few functions underlying the main function. There is some attempt to make this function as generic as possible (but this still needs work)
+
+`find_dates(text_in, char_string = "Data")` find dates in the plannila
+
+`doc_data_find(text_in, feature_1, feature_2)` find the section of data in the file
+
+`extract_well_sec(well_data_start, text_in, text_string)` Extract the data from the section of data in the file
+
+And finally the wrapper function: `read_manual_well(filename, input_dir = "../Wells/Manual")` This combines the above functions
+
+### Demonstration
+
+Find dates
+
+```{r}
+text_in_file <- readtext(paste("../Wells/Manual", 
+      "Planilla cuenca 111219.docx", sep ="/"), 
+      encoding = "utf8")$text
+dates <- find_dates(text_in_file, "Data")
+dates
+```
+
+Find section of data in the file
+
+```{r}
+text_in_file <- readtext(paste("../Wells/Manual", 
+      "Planilla cuenca 111219.docx", sep ="/"), 
+      encoding = "utf8")$text
+
+well_data_section <- doc_data_find(text_in = text_in_file,
+                                      feature_1 = "Wells",
+                                      feature_2 = "Rain\n")
+
+well_data_section
+```
+
+extract the section of data from the file
+
+```{r}
+  well_data <- list()
+  # put the well tables in the list
+  for (i in 1:nrow(well_data_section)) {
+    well_data[[i]] <- 
+      extract_well_sec(well_data_start = well_data_section[i,], 
+                                       text_in = text_in_file, 
+                                       text_string = "N.")
+    well_data[[i]] <- well_data[[i]] %>%
+      mutate(Date = dates$dates[i])
+  }
+  well_data
+```
+
+And putting it all together
+
+```{r}
+well_test <- read_manual_well("Planilla cuenca 111219.docx")
+well_test
 ```

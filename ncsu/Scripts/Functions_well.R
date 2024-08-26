@@ -167,7 +167,13 @@ Merge_baro_well <- function(baro_df, well_df) {
 #' @param text_in all the text from the document
 #' @param text_string text_string uniquely indicating a row of well data ("N.")
 #' @example
-#' 
+#' text_in_file <- readtext(paste("../Wells/Manual", 
+#'      "Planilla cuenca 111219.docx", sep ="/"), 
+#'      encoding = "utf8")$text
+#'    well_data_section <- doc_data_find(text_in = text_in_file,
+#'                                      feature_1 = "Wells",
+#'                                      feature_2 = "Rain\n")   
+#'   
 extract_well_sec <- function(well_data_start, text_in, text_string) {
   well_data <- str_sub(text_in, well_data_start[1]+2,well_data_start[2]-1)
   # the character string with the well data
@@ -191,10 +197,18 @@ extract_well_sec <- function(well_data_start, text_in, text_string) {
 #' 
 #' Find the section from the document that has feature data
 #' @param text_in all the text from the document
-#' @param feature_1 Feature that you want to fin
+#' @param feature_1 Feature that you want to find
 #' @param feature_2 Following feature
 #' @example
-#' 
+#'  require(readtext)
+#'  # read in the file
+#' text_in_file <- readtext(paste("../Wells/Manual", 
+#'      "Planilla cuenca 111219.docx", sep ="/"), 
+#'      encoding = "utf8")$text
+#'    well_data_section <- doc_data_find(text_in = text_in_file,
+#'                                      feature_1 = "Wells",
+#'                                      feature_2 = "Rain\n")   
+#'                                      
 doc_data_find <- function(text_in, feature_1, feature_2) {
   
   # find the start of the data from the sheet
@@ -209,6 +223,34 @@ doc_data_find <- function(text_in, feature_1, feature_2) {
 
 
 
+
+#############################
+#' find data in document
+#' 
+#' Find the dates in the files
+#' This function is not very generic,specific to the La Corona files
+#' @param text_in all the text from the document
+#' @param char_string String indicating location of the dates
+#' @example
+#' text_in_file <- readtext(paste("../Wells/Manual", 
+#'      "Planilla cuenca 111219.docx", sep ="/"), 
+#'      encoding = "utf8")$text
+#' dates <- find_dates(text_in_file, "Data")     
+
+find_dates <- function(text_in, char_string = "Data") {
+    # find the dates on the sheets
+    line_dates <- str_locate_all(text_in,char_string)
+    dates <- as.Date(vector(mode = "character"))
+    for (i in 1:nrow(line_dates[[1]])) {
+      dates[[i]] <- dmy(str_sub(text_in,line_dates[[1]][i,2]+1,
+                                line_dates[[1]][i,2]+12))
+    }
+  return(tibble(dates = dates))
+}
+
+
+
+
 #############################
 #' read manual well
 #' 
@@ -216,6 +258,7 @@ doc_data_find <- function(text_in, feature_1, feature_2) {
 #' @param filename the file name to read in
 #' @param input_dir any additional path, defaults to "."
 #' @example
+#' well_test <- read_manual_well("Planilla cuenca 111219.docx")
 #' 
 read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
   require(readtext) # https://cran.r-project.org/web/packages/readtext/vignettes/readtext_vignette.html#microsoft-word-files-.doc-.docx
@@ -224,12 +267,13 @@ read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
   text_in_file <- readtext(paste(input_dir, filename, sep ="/"), 
                            encoding = "utf8")$text
   # find the dates on the sheets
-  line_well <- str_locate_all(text_in_file,"Data")
-  dates <- tibble(dates = rep(ymd(Sys.Date()), nrow(line_well[[1]])))
-  for (i in 1:nrow(line_well[[1]])) {
-      dates$dates[i] <- dmy(str_sub(text_in_file,line_well[[1]][i,2]+1,
-                              line_well[[1]][i,2]+12))
-    }
+  dates <- find_dates(text_in_file, "Data")
+  # line_well <- str_locate_all(text_in_file,"Data")
+  # dates <- tibble(dates = rep(ymd(Sys.Date()), nrow(line_well[[1]])))
+  # for (i in 1:nrow(line_well[[1]])) {
+  #     dates$dates[i] <- dmy(str_sub(text_in_file,line_well[[1]][i,2]+1,
+  #                             line_well[[1]][i,2]+12))
+  #   }
   #-----------------------------
   # Find the data from the Wells
   well_data_section <- doc_data_find(text_in = text_in_file,
@@ -255,8 +299,8 @@ read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
 }
 
 #testing
-well_test <- read_manual_well("Planilla cuenca 111219.docx")
-well_test
+#well_test <- read_manual_well("Planilla cuenca 111219.docx")
+#well_test
 # # testing
 # read_dir <- "SampleFiles/Wells/Automatic"
 # filenames <- dir(path = read_dir, pattern = ".csv")
