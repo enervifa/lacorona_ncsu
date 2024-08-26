@@ -114,7 +114,7 @@ diff_data <- function(data) {
 
 first_quick_plot <- function(df, ggtitle_text) {
 # Create the first scatter plot
-  quickplot_rain <- ggplot(df, aes(x = date, y = CumRainmm, color = filename)) +
+  quickplot_rain <- ggplot(df, aes(x = Date, y = CumRainmm, color = filename)) +
     geom_point(size = 2) +
   # geom_line(size = 0.5)+
     labs(x = "Date", y = "Cumulative Rain in mm") +
@@ -141,7 +141,7 @@ first_quick_plot <- function(df, ggtitle_text) {
 #'@export
 second_quick_plot  <- function(df, ggtitle_text) {
   # Create the plot
-  quickplot_rain2 <- ggplot(df, aes(x = date, y = CumRainmm, color = filename, group = filename)) +
+  quickplot_rain2 <- ggplot(df, aes(x = Date, y = CumRainmm, color = filename, group = filename)) +
     geom_col(width = 0.5) +
     labs(x = "Date", y = "Cumulative Rain in mm") +
     ggtitle(ggtitle_text) +
@@ -185,7 +185,7 @@ process_rain_data <- function(file_path, output_path_add = "processed"){
       cat("Processed file:", out$file, "Saved output to:", paste(out$path, output_path_add, sep = "/" ), "\n")
     }
 }
-#this fucntion now works only with Date Time format to outpit OTIP tag files 
+#this function now works only with Date Time format to output OTIP tag files 
 #this files contain the individual tips
 
 # second version of the above function that automatically runs through all files
@@ -232,19 +232,20 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
       data <- read_otip_file(name, path_to_processed)
       # Check if "R1" or "R7" is in the file name at specific positions (e.g., at the beginning)
       #file_name <- basename(user_file_paths)
+     # browser()
       if (grepl("R1|R7", name)){
         # Apply transformations based on file name
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.254)%>%
           mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(date,CumRainmm) # If "R1" or "R7" is in the file name
+          select(Date,CumRainmm) # If "R1" or "R7" is in the file name
         
       } else {
         # Default transformation
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.1)%>%
           mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(date,CumRainmm)# Default transformation for other cases
+          select(Date,CumRainmm)# Default transformation for other cases
         
       }
       #browser()
