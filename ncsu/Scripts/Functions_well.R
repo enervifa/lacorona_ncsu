@@ -58,8 +58,13 @@ read_hobo_well <- function(filename, input_dir = "."  ,
 #' Function to plot the well output
 #' @param df dataframe to plot
 #' @param baro switch (true/false) for baro fiel plotting
+#' @return a ggplot structure
 #' @example
+#' df1 <- read_hobo_well(filename = "N1111219.csv", 
+#'                    input_dir = "../Wells/Automatic")
+#' p_out <- plot_well(df1) 
 #' 
+#' @export
 plot_well <- function(df, baro = FALSE) {
   if (baro  == F) {
     p <- df %>%
@@ -86,7 +91,10 @@ plot_well <- function(df, baro = FALSE) {
 #' @param df dataframe to write
 #' @param filename_in filename to write processed
 #' @param path_out directory to write the file
+#' @return nothing, writes file to a directory
 #' @example
+#' 
+#' @export
 write_well <- function(df, filename_in, path_out = "../Wells/Automatic/Processed") {
   write_csv(df, paste0(path_out,"/",filename_in,"_processed.csv"))
 }
@@ -99,7 +107,7 @@ write_well <- function(df, filename_in, path_out = "../Wells/Automatic/Processed
 #' @param input_dir any additional path, defaults to "."
 #' @param coltypes column types, has a default to match current baro file
 #' @param skip defaults to 1
-#' 
+#' @return a list with the file data and a plotting structure
 #' @example 
 #' df1 <- read_hobo_baro(filename = "N11111219.csv", 
 #'                    input_dir = "../Wells/Automatic")
@@ -134,8 +142,11 @@ read_hobo_baro <- function(filename, input_dir = "."  ,
 #' Merge the baro pressure and well data to process
 #' @param baro_df file with baro pressure data
 #' @param well_df file with waterlevel/pressure data
+#' @return a list with a df with the merged data and a plotting structure
 #' @example 
 #' 
+#' 
+#' @export
 Merge_baro_well <- function(baro_df, well_df) {
   # First we need to summarise the barometric pressure over the hour that the
   # well measurements are taken
@@ -166,6 +177,7 @@ Merge_baro_well <- function(baro_df, well_df) {
 #' @param well_data_start start and finish locations in the text with the data
 #' @param text_in all the text from the document
 #' @param text_string text_string uniquely indicating a row of well data ("N.")
+#' @return a tibble with the well ids and depths
 #' @example
 #' text_in_file <- readtext(paste("../Wells/Manual", 
 #'      "Planilla cuenca 111219.docx", sep ="/"), 
@@ -173,7 +185,7 @@ Merge_baro_well <- function(baro_df, well_df) {
 #'    well_data_section <- doc_data_find(text_in = text_in_file,
 #'                                      feature_1 = "Wells",
 #'                                      feature_2 = "Rain\n")   
-#'   
+#' @export 
 extract_well_sec <- function(well_data_start, text_in, text_string) {
   well_data <- str_sub(text_in, well_data_start[1]+2,well_data_start[2]-1)
   # the character string with the well data
@@ -199,6 +211,7 @@ extract_well_sec <- function(well_data_start, text_in, text_string) {
 #' @param text_in all the text from the document
 #' @param feature_1 Feature that you want to find
 #' @param feature_2 Following feature
+#' @return location numbers for the section to extract
 #' @example
 #'  require(readtext)
 #'  # read in the file
@@ -208,7 +221,7 @@ extract_well_sec <- function(well_data_start, text_in, text_string) {
 #'    well_data_section <- doc_data_find(text_in = text_in_file,
 #'                                      feature_1 = "Wells",
 #'                                      feature_2 = "Rain\n")   
-#'                                      
+#' @export                                      
 doc_data_find <- function(text_in, feature_1, feature_2) {
   
   # find the start of the data from the sheet
@@ -223,7 +236,7 @@ doc_data_find <- function(text_in, feature_1, feature_2) {
 
 
 
-
+# This function might not be needed, extract date from filename
 #############################
 #' find data in document
 #' 
@@ -231,12 +244,13 @@ doc_data_find <- function(text_in, feature_1, feature_2) {
 #' This function is not very generic,specific to the La Corona files
 #' @param text_in all the text from the document
 #' @param char_string String indicating location of the dates
+#' @return a tibble with the dates 
 #' @example
 #' text_in_file <- readtext(paste("../Wells/Manual", 
 #'      "Planilla cuenca 111219.docx", sep ="/"), 
 #'      encoding = "utf8")$text
-#' dates <- find_dates(text_in_file, "Data")     
-
+#' dates <- find_dates(text_in_file, "Data")
+#' @export     
 find_dates <- function(text_in, char_string = "Data") {
     # find the dates on the sheets
     line_dates <- str_locate_all(text_in,char_string)
@@ -249,17 +263,17 @@ find_dates <- function(text_in, char_string = "Data") {
 }
 
 
-
-
 #############################
 #' read manual well
 #' 
 #' read the manual well files
 #' @param filename the file name to read in
 #' @param input_dir any additional path, defaults to "."
+#' @return a tibble with the well ids, the measurements and the dates
 #' @example
 #' well_test <- read_manual_well("Planilla cuenca 111219.docx")
 #' 
+#' @export
 read_manual_well <- function(filename, input_dir = "../Wells/Manual") {
   require(readtext) # https://cran.r-project.org/web/packages/readtext/vignettes/readtext_vignette.html#microsoft-word-files-.doc-.docx
   #browser()  
