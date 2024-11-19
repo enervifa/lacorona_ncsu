@@ -2,7 +2,7 @@
 # the original doc files first need to be converted to docx
 # We used http://www.multidoc-converter.com/en/index.html
 
-# This file attempts to have function to extract all relevant sections
+# This file attempts to have functions to extract all relevant sections
 
 require(tidyverse)
 require(readtext)
@@ -10,7 +10,7 @@ require(readtext)
 
 
 #############################
-#' extract a specific data in document
+#' extract specific data in document
 #' 
 #' extract the section from the document that has specific data
 #' based on start and finish text position and 
@@ -37,20 +37,19 @@ extract_data_sec <- function(data_start, text_in, text_string = "N.",
   # split the character string with the well data at "\n"
   extract_text <- str_split(data, split_string)
   # the names/locations of the features
-  browser()
-  if (length(text_string) > 1) {
-    foo <- paste0(text_string[1],"|",text_string[2],"|",text_string[3])
-    grab <- str_detect(extract_text[[1]],foo)
-    loc_feature <- seq(1:length(extract_text[[1]]))[grab == T]
-  } else {
+  # #browser()
+  # if (length(text_string) > 1) {
+  #   foo <- paste0(text_string[1],"|",text_string[2],"|",text_string[3])
+  #   grab <- str_detect(extract_text[[1]],foo)
+  #   loc_feature <- seq(1:length(extract_text[[1]]))[grab == T]
+  # } else {
     grab <- str_detect(extract_text[[1]], text_string)
     # the locations for all the feature names
     loc_feature <- seq(1:length(extract_text[[1]]))[grab == T]
-  }
+  #}
 
   
   #browser()
-  ## In here function to find the times
   ## find_times
   sample_times <- extract_times(text_in = extract_text)
   # extract the feature names and the data
@@ -123,13 +122,17 @@ extract_times <- function(text_in, text_string = ":") {
 #'                                      feature_2 = "Rain\n")   
 #' @export                                    
 doc_data_find <- function(text_in, feature_1, feature_2) {
-  # browser()
   # find the start of the data from the sheet
   feature1_find <- str_locate_all(text_in,feature_1)
   # find the start of the next data, locator in the sheet
   feature2_find <- str_locate_all(text_in,feature_2)
-  # the sections of the document with the well data
-  data_section <- cbind(feature1_find[[1]][,2],feature2_find[[1]][,1]-1)
+  # the sections of the document with the relevant data
+  # Flumes are different because there is also a title
+  if (feature_1 == "Flumes") {
+    data_section <- cbind(feature1_find[[1]][c(2,4),2],feature2_find[[1]][,1]-1)
+  } else {
+    data_section <- cbind(feature1_find[[1]][,2],feature2_find[[1]][,1]-1)
+  }
   
   return(data_section)
 }
@@ -176,6 +179,7 @@ find_dates <- function(text_in, char_string = "Data") {
 #' @example
 #' well_test <- read_manual_well("Planilla cuenca 111219.docx")
 #' 
+#' @export
 read_manual_file <- function(filename, feature, input_dir = "../Wells/Manual") {
   #browser()  
   # read in the file
@@ -225,6 +229,31 @@ read_manual_file <- function(filename, feature, input_dir = "../Wells/Manual") {
   
 }
 
+
+#############################
+#' extract a specific flume data set in document
+#' 
+#' extract the section from the document that has specific data
+#' based on start and finish text position and 
+#' @param data_start start and finish locations in the text with the data
+#' @param text_in all the text from the document
+#' @param text_string text_string uniquely indicating a row of feature data ("V." or "E." or "S.")
+#' @param places1 number of text places to add after data_start (= 2)
+#' @param places2 number of text places to go back after finish (= 1)
+#' @param split_string character where to split the extracted text string
+#' @example
+#' text_in_file <- readtext(paste("../Wells/Manual", 
+#'      "Planilla cuenca 111219.docx", sep ="/"), 
+#'      encoding = "utf8")$text
+#' well_data_section <- doc_data_find(text_in = text_in_file,
+#'                                      feature_1 = "Wells",
+#'                                      feature_2 = "Rain\n")   
+#' well_data <- extract_data_sec(data_start = well_data_section[1,]
+#'                      text_in = text_in_file, text_string = "N.")
+#'                      
+extract_data_sec <- function(data_start, text_in, text_string = "N.", 
+                             places1 = 2, places2 = 1, 
+                             split_string = "\n") {}
 
 
 #testing
