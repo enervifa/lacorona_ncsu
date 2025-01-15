@@ -36,16 +36,16 @@ source("Functions_Flumes.R")
 Read in the files
 
 ```{r read-files}
-File_info <- read_list_flume("../flumes")
+File_info <- read_list_flume("..//All_Raw_Data/T042223/flumes")
 str(File_info)
 ```
 
-Lets' also test the manual read of S1110119.csv (don't use quotes)
+Lets' also test the manual read of S1042223.csv (don't use quotes)
 
 Testing the HOBOU20 function
 
 ```{r info-hobo}
-test_info <- read_flume_files(file_path = "../flumes")
+test_info <- read_flume_files(file_path = "..//All_Raw_Data/T042223/flumes")
 test_info
 ```
 
@@ -55,7 +55,7 @@ This function now returns a ggplot object and the data output file is written to
 
 ```{r test-hobo}
 test_data <- file_process(test_info$names[1], test_info$paths[1],
-                          test_info$instrument[1], output_dir = "../flumes/processed")
+                          test_info$instrument[1], output_dir = "../All_Raw_Data/T042223/flumes/processed")
 ggplotly(test_data)
 ```
 

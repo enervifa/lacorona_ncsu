@@ -89,8 +89,9 @@ identify_instrument <- function(file_name, file_path_in = file_path) {
     if (grepl("Volt",grab_lines[2], ignore.case =T)) {
       instrument <- "StevensU12"
     } else {
-      instrument <- ifelse((grepl("p", prefix) == T |
-                grepl("S", prefix) == T), "HOBOU20", "ISCO_nivel")
+      instrument <- ifelse((grepl("p", prefix, ignore.case = T) == T |
+                grepl("S", prefix, ignore.case = T) == T), 
+                "HOBOU20", "ISCO_nivel")
     }
   }
   return(instrument)
@@ -249,7 +250,7 @@ read_list_flume <- function(file_path, file_ext = ".csv") {
 process_file_list <- function(file_info, out_path) {
   
   output_list <- list()
-  
+  browser()
   for(i in 1:length(file_info$names)) {
     #browser()
     output_list[[i]] <- file_process(file_info$names[i],file_info$paths[i], 
@@ -274,6 +275,7 @@ file_process <- function(file_name, file_path, instrument, output_dir) {
         # Create the output directory if it doesn't exist
         dir.create(output_dir, showWarnings = FALSE)
       }
+      #browser()
       if (instrument == "HOBOU20") {
         # Process and plot files from HOBO20 in V1V2, and "v3p"," V4p" from V3V4
         #browser()
@@ -412,7 +414,7 @@ flume_isco_plot <- function(df, ggtitle_text, velocity_in) {
 read_hobou20 <- function(filename, input_dir ,
                          coltypes = cols("d","c","d","d","d","d","c","c","c","c"),
                          skip = 1, plotit = F, outdir = output_dir) {
-  #browser()
+  browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         skip = skip, col_types = coltypes)
   file_read <- file_read %>%
@@ -427,7 +429,7 @@ read_hobou20 <- function(filename, input_dir ,
     select(`Date and Time`, `Temp, ?C`,
            `Water Level, meters`)
   # write file to directory  
-  #browser()
+ # browser()
   location <- str_locate(filename, ".csv")
   filename_out <- str_sub(filename, 0,location[1]-1)
   
@@ -534,7 +536,7 @@ read_isco <- function(filename, input_dir ,
                       coltypes = cols("c","i","i"),
                       skip = 7, plotit = F, velocity = vel_trigger,
                       outdir = output_dir) {
-  #browser()
+  browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         col_names =F,
                         skip = skip, col_types = coltypes)

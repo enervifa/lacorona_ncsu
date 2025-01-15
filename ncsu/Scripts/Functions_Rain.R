@@ -191,6 +191,11 @@ process_rain_data <- function(file_path, output_path_add = "processed"){
 # second version of the above function that automatically runs through all files
 process_rain_data_auto <- function(file_path, output_path_add = "processed"){
   #browser()
+  # check if folder 'processed' exists
+  if (dir.exists(paste0(file_path,"/", output_path_add))==F) {
+    dir.create(paste0(file_path,"/", output_path_add))
+  }
+  
   # step 1
   input <- read_list_files(file_path)
   # input is a list
@@ -202,7 +207,7 @@ process_rain_data_auto <- function(file_path, output_path_add = "processed"){
     # # Read the .csv file
     # difference the events column
     data_process1 <- diff_data(data_process)
-    
+    #browser()
     # write to otip file
     out <- write_otip_file(name, data_process1, input = input, output_path_add)
     cat("Processed file:", out$file, "Saved output to:", paste(out$path, output_path_add,sep="/"), "\n")
@@ -226,6 +231,22 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
   if (file_numbers != "all") {
     input_names <- input$names[file_numbers]
   } else input_names <-  input$names
+  
+  # Loop through each .csv file to find last date
+  start_dates <- list()
+  browser()
+  for (name in input_names) {
+      # Read the .csv file
+      data <- read_otip_file(name, path_to_processed)
+    
+      #extract the first date from the file
+      start_dates[name] <- as.Date(data$Date[1])
+  }
+  print(start_dates)
+  # find the latest start date
+  last_date <- max(unlist(start_dates))
+  
+  
   # Loop through each .csv file
   for (name in input_names) {
       # Read the .csv file
@@ -236,16 +257,25 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
       if (grepl("R1|R7", name)){
         # Apply transformations based on file name
         data2 <- data %>%
-          mutate(tipRainmm = Event * 0.254)%>%
+          mutate(tipRainmm = Event * 0.254)%>% # If "R1" or "R7" is in the file name
+          filter(Date >= as.Date(last_date)) %>% # filter by latest date
           mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(Date,CumRainmm) # If "R1" or "R7" is in the file name
-        
+          select(Date,CumRainmm) 
+        if (data$Date[1] < as.Date(last_date)) {
+          # write warning
+          warning(paste(last_date, "used as start date, some data exists before this date"))
+        }
       } else {
         # Default transformation
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.1)%>%
+          filter(Date >= as.Date(last_date)) %>% # filter by latest date
           mutate(CumRainmm = cumsum(tipRainmm))%>%
           select(Date,CumRainmm)# Default transformation for other cases
+        if (data$Date[1] < as.Date(last_date)) {
+          # write warning
+          warning(paste(last_date, "used as start date, some data exists before this date"))
+        }
         
       }
       #browser()
@@ -261,11 +291,12 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
 
 ## Plot the data
 check_plot <- function(data_list, plot = 1) {
-  
+
+    
   # collapse the list
   result_df <- bind_rows(data_list)
   #browser()
-  
+
   # Create a title with the download data date
   filename1 <- result_df$filename[1]
   file_date <- substr(filename1, 8, nchar(filename1))

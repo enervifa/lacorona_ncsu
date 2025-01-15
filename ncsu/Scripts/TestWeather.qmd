@@ -19,7 +19,7 @@ To be able to run this notebook, the following R packages should be available
 ```{r message = FALSE}
 library(tidyverse) 
 library(plotly) 
-library(htmlwidgets)
+#library(htmlwidgets)
 ```
 
 ## Loading the developed functions
@@ -50,8 +50,8 @@ cols_drop <- c("id", "julian", "time", "battery voltage")
 We can now test the developed functions to read in the weather files and store the data in the processed folder.
 
 ```{r test-read-hobo}
-test_hobo <- read_hobo_weather(filename = "em061523.dat", 
-                               dir = "../Weather",
+test_hobo <- read_hobo_weather(filename = "em042223.dat", 
+                         dir = "../All_Raw_Data/T042223/Weather",
                                cols_to_drop = cols_drop, plotit=T)
 test_hobo$data
 
@@ -62,8 +62,8 @@ ggplotly(test_hobo$plot)
 And we can test the ET0 function
 
 ```{r check-ET0}
-test_ET0 <- ET0_hobo_weather(filename = "em061523.dat", 
-                               dir = "../Weather",
+test_ET0 <- ET0_hobo_weather(filename = "em042223.dat", 
+                        dir = "..//All_Raw_Data/T042223/Weather",
                                cols_to_drop = cols_drop, plot_data=T)
 test_ET0$data
 

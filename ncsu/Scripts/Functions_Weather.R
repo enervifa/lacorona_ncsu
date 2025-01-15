@@ -133,6 +133,11 @@ read_hobo_weather <- function(filename, dir, cols_to_drop, c_names_in = c_names,
     select(!cols_to_drop)
   # write out the file
   if (write_it == T) {
+    # check if folder 'processed' exists
+    if (dir.exists(paste0(dir,"/processed"))==F) {
+      dir.create(paste0(dir,"/processed"))
+    }
+    
     write_weather_file(file_out, filename, paste0(dir,"/processed"))
   }
   
