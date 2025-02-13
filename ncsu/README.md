@@ -12,8 +12,17 @@ Merge processed files and plot at different time steps             | Processed/ 
 
 
 
+Just the Flume files to be read by TestFlumes.qmd:
 
-
+| Filename                                            | Logger        | Conversion                                            | Number/Catchment                                                                                                                                                               |   |
+|-----------------------------------------------------|---------------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| V1052523.hobo,v2052523.hobo                         | Hobo20        | To convert to .csv using another name than ISCO files | 2/V1V2                                                                                                                                                                         |   |
+| s1052523.hobo, S2052523.hobo                        | Hobo20        | To convert to .csv                                    | 2/V1V2                                                                                                                                                                         |   |
+| E1052523.hobo,E2052523.hobo                         | Hobo20        | To convert to .csv                                    | 2/V1V2                                                                                                                                                                         |   |
+| V3P052523.hobo,v4P052523.hobo                       | Hobo20        | To convert to .csv                                    | 2/V3V4                                                                                                                                                                         |   |
+| bar3052523.hobo, bar4052523.hobo                    | Hobo20        | To convert to .csv                                    | For wells, V1 ,V2 and V3 are compensated with the barometer of   catchment 3 (bar3 or new barometer bar04 files). V4 is compensated with the   barometer of catchment 4 (bar4) |   |
+| v3052523.csv,v4052523.csv,v2052523.csv,v1052523.csv | ISCO Nivel    | already .csv in the folder                            | 2/V1V2, 2/V3V4                                                                                                                                                                 |   |
+| v4052523vel.csv,v3052523vel.csv                     | ISCO Velocity | already .csv in the folder                            | 2/V3V4                                                                                                                                                                         |   |
 
 
 
