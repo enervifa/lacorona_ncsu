@@ -1,1 +1,2 @@
 test
+Folder with data from T042223 and T052223. Flumes are compensated using .hobo software. In T04 only bar04 was used as they did not do bar3. In T05 flumes in V1,V2 and V3 were compensated with bar03 and V4 with bar4 (they are done at the same time). Wells were compensated with bar04. Compensated files in flumes with the same names as ISCO are _0. They migth need to be changed to .csv.csv to follow Chip's convention.
