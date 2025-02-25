@@ -414,8 +414,8 @@ flume_isco_plot <- function(df, ggtitle_text, velocity_in) {
 read_hobou20 <- function(filename, input_dir ,
                          coltypes = cols("d","c","d","d","d","d","c","c","c","c"),
                          skip = 1, plotit = F, outdir = output_dir) {
-  browser()
-  file_read <- read_csv(paste(input_dir,filename,sep="/"),n
+  #browser()
+  file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         skip = skip, col_types = coltypes)
   file_read <- file_read %>%
     mutate(`Date and Time` = force_tz(mdy_hms(`Date Time, GMT-03:00`),
