@@ -234,7 +234,7 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
   
   # Loop through each .csv file to find last date
   start_dates <- list()
-  browser()
+  #browser()
   for (name in input_names) {
       # Read the .csv file
       data <- read_otip_file(name, path_to_processed)

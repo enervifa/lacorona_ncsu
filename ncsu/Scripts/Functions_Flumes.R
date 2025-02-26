@@ -260,7 +260,7 @@ read_list_flume <- function(file_path, file_ext = ".csv") {
 process_file_list <- function(file_info, out_path) {
   
   output_list <- list()
-  browser()
+  #browser()
   for(i in 1:length(file_info$names)) {
     #browser()
     output_list[[i]] <- file_process(file_info$names[i],file_info$paths[i], 
@@ -546,7 +546,7 @@ read_isco <- function(filename, input_dir ,
                       coltypes = cols("c","i","i"),
                       skip = 7, plotit = F, velocity = vel_trigger,
                       outdir = output_dir) {
-  browser()
+  #browser()
   file_read <- read_csv(paste(input_dir,filename,sep="/"),
                         col_names =F,
                         skip = skip, col_types = coltypes)

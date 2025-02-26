@@ -38,7 +38,8 @@ Read in the files from the test folder
 Set the data directory for this exercise
 
 ```{r}
-Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223/flumes"
+#Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223/flumes"
+Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T052323/flumes"
 ```
 
 ```{r read-files}
@@ -46,7 +47,7 @@ File_info <- read_list_flume(Data_dir)
 str(File_info)
 ```
 
-Lets' also test the manual read of s1042223.csv (don't use quotes)
+Lets' also test the manual read of s1052523.csv (or s1042223.csv) (don't use quotes)
 
 Testing the HOBOU20 function
 
@@ -68,7 +69,7 @@ ggplotly(test_data)
 
 ### Stevens
 
-More challenging, testing the `read_stevens` function: filename V4042223.csv
+More challenging, testing the `read_stevens` function: filename V3052523_0.csv (V4042223csv.csv)
 
 ```{r info-stevens}
 test_info_stevens <- read_flume_files(file_path = Data_dir)
@@ -91,7 +92,7 @@ There are two types of ISCO files, one with velocity values, the other with leve
 
 The `read_isco` function has been adjusted from the original to differentiate between these two
 
-First test the `isco_level` instrument V3042223_0.csv
+First test the `isco_level` instrument v3052523.csv (V3042223.csv)
 
 ```{r info-isco}
 test_info_isco <- read_flume_files(file_path = Data_dir)
@@ -109,7 +110,7 @@ ggplotly(test_data_isco_n)
 
 ```
 
-Second test the `isco_velocity` instrument v3110119vel.csv
+Second test the `isco_velocity` instrument v4052523vel.csv (v3052523vel.csv has no data) (v3110119vel.csv)
 
 ```{r info-isco2}
 test_info_isco_v <- read_flume_files(file_path = Data_dir) 
@@ -133,7 +134,8 @@ This also should work
 ```{r process-list}
 test_list <- process_file_list(file_info = File_info, 
                                out_path = paste0(Data_dir,"/processed"))
-
+length(test_list) #number of files
+test_list$names
 ```
 
 We can now plot each of the objects in the test_list
