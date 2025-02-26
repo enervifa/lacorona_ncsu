@@ -39,6 +39,27 @@ Data_dir = "..//All_Raw_Data/Test_T4T52023_folder/T052323"
 
 Read in two processed files (rainfall and flume data)
 
+First list the names of the processed files
+
+```{r}
+rain_files <- list.files(paste0(Data_dir,"/rain/processed"))
+flume_files <- list.files(paste0(Data_dir,"/flumes/processed"))
+```
+
+We have the following processed rain files
+
+```{r}
+rain_files
+```
+
+We have the following processed flume files
+
+```{r}
+flume_files
+```
+
+Now read in two of the files (**change the file names manually**)
+
 ```{r}
 rain <- read_otip_file(name = "OTIP_r1052523.csv", 
                        path_to_file = paste0(Data_dir,"/rain/processed"))
@@ -105,7 +126,9 @@ Starting with the 6 min data
 p <- merged_df %>%
   #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
   ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
-  geom_line(aes(`Date and Time`, `Water Level, meters`), colour = "red") + theme_bw()
+  geom_line(aes(`Date and Time`, `Water Level, meters`*10), colour = "red") + theme_bw() + 
+  scale_y_continuous(sec.axis =sec_axis( trans=~./10, name="Water Level in Meters")) 
+p
 ggplotly(p)
 
 
@@ -115,14 +138,14 @@ ggplotly(p)
 p1 <- day_merged_df %>%
   #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
   ggplot(aes(`Date and Time`, Event)) + geom_bar(stat = "identity", fill = "blue") +
-  geom_line(aes(`Date and Time`, `Water Level, meters`*100), colour = "red") + theme_bw() +
+  geom_line(aes(`Date and Time`, `Water Level, meters`*500), colour = "red") + theme_bw() +
   scale_y_continuous(
     # Features of the first axis
     name = "Event",
     # Add a second axis and specify its features
-    sec.axis = sec_axis( trans=~./100, name="Water Level in Meters")
+    sec.axis = sec_axis( trans=~./500, name="Water Level in Meters")
   )
-#p1
+p1
 ggplotly(p1)
 ```
 
