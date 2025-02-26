@@ -31,7 +31,8 @@ require(plotly)
 #'  date2
 #' 
 #' @export
-extract_date <- function(file_name, split = regex("(\\d+)(?!.*\\d)")) {
+extract_date <- function(file_name, split = regex("(\\d+)(\\d)")) { #(?!._*\\d)
+  #browser()
   locations <- str_locate(file_name, split)
   split_result <- str_sub(file_name, locations[2]-5, locations[2])
    # convert to date
@@ -67,6 +68,11 @@ extract_pre_fix <- function(file_name) {
 #' function to identify the instrument tyoe from the filename
 #' This function only works for the current known filename constructs
 #' will need to be checked if construct of file names changes
+#' case S --> HoboU20
+#' case V1, V2, V3, V4 --> Stevens U12, "Volt"
+#' case V3...._0, or csv.csv --> ISCO_nivel
+#' case E or V3p etc --> HoboU20
+#' 
 #' @param file_name character string, name of the file
 #' @param file_path_in file folder, set to default file_path
 #' 
@@ -81,6 +87,7 @@ identify_instrument <- function(file_name, file_path_in = file_path) {
   vel_trigger <- ifelse(grepl("vel",file_name, ignore.case = T) == T,
                         TRUE, FALSE)
   # read first three lines of the file
+  #browser()
   grab_lines <- read_lines(file.path(file_path_in,file_name), n_max=3)
 
   if(vel_trigger == T) {
@@ -90,12 +97,15 @@ identify_instrument <- function(file_name, file_path_in = file_path) {
       instrument <- "StevensU12"
     } else {
       instrument <- ifelse((grepl("p", prefix, ignore.case = T) == T |
-                grepl("S", prefix, ignore.case = T) == T), 
+                grepl("S", prefix, ignore.case = T) == T |
+                  grepl("E", prefix, ignore.case = T) == T), 
                 "HOBOU20", "ISCO_nivel")
     }
   }
   return(instrument)
 }
+
+
 
 
 
