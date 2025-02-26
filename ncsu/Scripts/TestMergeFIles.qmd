@@ -33,14 +33,18 @@ source("Functions_merge.R")
 
 We can now start testing the functions.
 
+```{r}
+Data_dir = "..//All_Raw_Data/Test_T4T52023_folder/T052323"
+```
+
 Read in two processed files (rainfall and flume data)
 
 ```{r}
-rain <- read_otip_file(name = 
-                         "OTIP_r4110119.csv",                    path_to_file = "../rain/processed")
+rain <- read_otip_file(name = "OTIP_r1052523.csv", 
+                       path_to_file = paste0(Data_dir,"/rain/processed"))
 
-flume <- read_flume_output(name = 
-                         "S1110119_processed.csv",                    path_to_file = "../Flumes/processed")
+flume <- read_flume_output(name = "S1052523_processed.csv",
+                           path_to_file = paste0(Data_dir,"/Flumes/processed"))
 
 ```
 
