@@ -33,6 +33,12 @@ source("Functions_Flumes.R")
 
 ## Testing the functions
 
+Print all the available functions
+
+```{r}
+print(lsf.str())
+```
+
 Read in the files from the test folder
 
 Set the data directory for this exercise
@@ -45,6 +51,10 @@ Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T052323/flumes"
 ```{r read-files}
 File_info <- read_list_flume(Data_dir)
 str(File_info)
+```
+
+```{r}
+File_info$names
 ```
 
 Lets' also test the manual read of s1052523.csv (or s1042223.csv) (don't use quotes)

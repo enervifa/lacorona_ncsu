@@ -65,7 +65,7 @@ extract_pre_fix <- function(file_name) {
 ##########################################################
 #' Identify an instrument
 #' 
-#' function to identify the instrument tyoe from the filename
+#' function to identify the instrument type from the filename
 #' This function only works for the current known filename constructs
 #' will need to be checked if construct of file names changes
 #' case S --> HoboU20
@@ -561,11 +561,11 @@ read_isco <- function(filename, input_dir ,
     
   } else {
     colnames(file_read) <- c("Date and Time", "Sample",
-                             "Level (ft)")
+                             "Level (m)")
     file_out <- file_read %>%
       mutate(`Date and Time` = time_convert(`Date and Time`))  %>%
-      mutate(`Level (ft)` = as.numeric(paste(Sample, `Level (ft)`, sep = ".")))
-    data_out <- file_out %>% select(`Date and Time`,`Level (ft)`)
+      mutate(`Level (m)` = as.numeric(paste(Sample, `Level (m)`, sep = ".")))
+    data_out <- file_out %>% select(`Date and Time`,`Level (m)`)
     
   }
 

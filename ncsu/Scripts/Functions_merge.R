@@ -58,8 +58,10 @@ read_otip_file <- function(name, path_to_file="."){
 #' 
 #' @export
 read_flume_output <- function(name, path_to_file="."){
-  data_out <- read_csv(paste0(path_to_file,"/",name))
-  # make sure dates are working
+  #force date column to be character
+  data_out <- read_csv(paste0(path_to_file,"/",name), col_types = cols("c","d"))
+ #browser()
+    # make sure dates are working
   data_out <- data_out %>%
     mutate(`Date and Time` = ymd_hms(`Date and Time`, tz = "America/Argentina/Buenos_Aires"))
   return(data_out)
@@ -89,6 +91,14 @@ sum_fun <- function(df, timestep = "6 min") {
     new_df_summary <- new_df %>%
       group_by(sum_time) %>%
       summarise(value = sum(!!sym(summary_column), na.rm = T))
+   #browser()
+    # add zero rainfall times
+    new_date_time <- tibble(sum_time = seq(new_df$sum_time[1],new_df$sum_time[nrow(new_df)], 
+                                           by = timestep),
+                            Event = 0)
+    new_df_summary <- left_join(new_date_time,new_df_summary, by = "sum_time") %>%
+      mutate(value = ifelse(is.na(value) == T, Event, value)) %>%
+      select(sum_time,value)
   } else {
     new_df_summary <- new_df %>%
       group_by(sum_time) %>%

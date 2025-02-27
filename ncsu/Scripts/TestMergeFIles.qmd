@@ -61,10 +61,10 @@ flume_files
 Now read in two of the files (**change the file names manually**)
 
 ```{r}
-rain <- read_otip_file(name = "OTIP_r1052523.csv", 
+rain <- read_otip_file(name = "OTIP_r7052523.csv", 
                        path_to_file = paste0(Data_dir,"/rain/processed"))
 
-flume <- read_flume_output(name = "S1052523_processed.csv",
+flume <- read_flume_output(name = "V4p052523_processed.csv",
                            path_to_file = paste0(Data_dir,"/Flumes/processed"))
 
 ```
@@ -83,6 +83,12 @@ test_summary_flume <- sum_fun(flume)
 
 ```
 
+Show the results
+
+```{r}
+test_summary_flume
+```
+
 We will now merge these two files.
 
 In this case the rainfall file should be df1, as this has the most dense observations. The function uses full_join to make sure also keep all the observations in df2 (even if there is no equivalent time in df1
@@ -90,6 +96,12 @@ In this case the rainfall file should be df1, as this has the most dense observa
 ```{r mergetest}
 merged_df <- merge_data(test_summary_rain,test_summary_flume)
 
+```
+
+Show the merged data
+
+```{r}
+head(merged_df)
 ```
 
 ## Summarising across days and months
@@ -125,9 +137,11 @@ Starting with the 6 min data
 ```{r plotting-6min}
 p <- merged_df %>%
   #pivot_longer(2:3,values_to = "value", names_to="variable") %>%
-  ggplot(aes(`Date and Time`, Event*0.2)) + geom_bar(stat = "identity", fill = "blue") +
-  geom_line(aes(`Date and Time`, `Water Level, meters`*10), colour = "red") + theme_bw() + 
-  scale_y_continuous(sec.axis =sec_axis( trans=~./10, name="Water Level in Meters")) 
+  ggplot(aes(`Date and Time`, Event*0.2)) + 
+  geom_point(colour = "blue") +
+    #geom_bar(stat = "identity", fill = "blue") +
+  geom_line(aes(`Date and Time`, `Water Level, meters`), colour = "red") + theme_bw() + 
+  scale_y_continuous(sec.axis =sec_axis( trans=~., name="Water Level in Meters")) 
 p
 ggplotly(p)
 
@@ -169,32 +183,37 @@ ggplotly(p2)
 The next test is whether we can add a further file to the data. Reading in an isco velocity file
 
 ```{r}
-isco <- read_flume_output(name = 
-                         "v3110119vel.csv_processed.csv",                    path_to_file = "../Flumes/processed")
+isco <- read_flume_output(name = "v4052523vel_processed.csv",
+                          path_to_file = paste0(Data_dir,"/Flumes/processed"))
 ```
 
 Summarise this data to 6 min data
 
 ```{r}
 test_summary_isco <- sum_fun(isco)
+test_summary_isco
 ```
 
 Now add this to the other two datasets
 
 ```{r}
 merged_three_df <- merge_data(merged_df,test_summary_isco)
+merged_three_df
 ```
 
-Now do the plotting
+Now do the plotting. this requires a bit of scaling to make sure this plots well
 
 ```{r plotting3-6min}
 p3 <- merged_three_df %>%
   pivot_longer(3:ncol(merged_three_df),values_to = "value", 
                names_to="variable") %>%
   ggplot(aes(`Date and Time`, Event*0.2)) + 
-  geom_bar(stat = "identity",fill = "blue") + 
+  geom_point(colour = "blue", alpha = 0.5) +
+  #geom_bar(stat="identity", fill = "darkblue") + 
   geom_line(aes(`Date and Time`,value, colour =variable)) + 
-  theme_bw()
+  theme_bw() + ylab("Rainfall (mm)") + 
+  scale_y_continuous(sec.axis = sec_axis(trans=~., name = "water level (m)"))
+p3
 ggplotly(p3)
 
 
