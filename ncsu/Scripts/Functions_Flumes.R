@@ -402,7 +402,7 @@ flume_isco_plot <- function(df, ggtitle_text, velocity_in) {
   } else {
     p1 <- df %>%
       na.omit() %>%
-      ggplot(aes(`Date and Time`,`Level (ft)`)) + geom_line() +
+      ggplot(aes(`Date and Time`,`Water Level, meters`)) + geom_line() +
       theme_classic() + ggtitle(ggtitle_text)
     return(p1)
   }
@@ -510,8 +510,8 @@ read_stevens <- function(filename, file_prefix, input_dir,
   data_out <- data_out %>%
     select(`Date and Time`,`Water Level, meters`)
   # write file to output directory
-  location <- str_locate(filename, ".csv")
-  filename_out <- str_sub(filename, 0,location[1]-1)
+  location <- str_locate_all(filename, "csv")
+  filename_out <- str_sub(filename, 0,location[[1]][2]-2)
   
   write_csv(data_out, 
             paste0(outdir,"/",filename_out, "_processed.csv"))
@@ -561,11 +561,12 @@ read_isco <- function(filename, input_dir ,
     
   } else {
     colnames(file_read) <- c("Date and Time", "Sample",
-                             "Level (m)")
+                             "Water Level, meters")
     file_out <- file_read %>%
       mutate(`Date and Time` = time_convert(`Date and Time`))  %>%
-      mutate(`Level (m)` = as.numeric(paste(Sample, `Level (m)`, sep = ".")))
-    data_out <- file_out %>% select(`Date and Time`,`Level (m)`)
+      mutate(`Water Level, meters` = as.numeric(paste(Sample, `Water Level, meters`,
+                                                      sep = ".")))
+    data_out <- file_out %>% select(`Date and Time`,`Water Level, meters`)
     
   }
 

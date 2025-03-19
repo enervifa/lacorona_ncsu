@@ -1,0 +1,101 @@
+---
+title: "Merge multiple sample periods La Corona"
+author: "Willem Vervoort & Eliana Nervi"
+format: pdf
+editor: visual
+---
+
+## Introduction
+
+This notebook demonstrates the different functions that have been developed to analyse and check the field data from La Corona, based on the original work from Prof Chip Cheshier and Prof Francois Birgand at North Carolina State University.
+
+Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
+
+This document specifically focuses on combining datasets from two different download periods.
+
+## Packages
+
+To be able to run this notebook, the following R packages should be available
+
+```{r message = FALSE}
+library(tidyverse)
+library(plotly)
+# library(readxl)
+# library(htmlwidgets)
+```
+
+## Loading the developed functions
+
+The functions are stored in the scripts folder, the same folder as the code version of this file (the \*.qmd file).
+
+```{r loadfunctions}
+source("Functions_Flumes.R") 
+```
+
+## 
+
+We can now start testing the functions.
+
+Define the directory for the combined data files
+
+```{r}
+Data_dir = "../All_Raw_Data/Test_T4T52023_folder/combined/"
+```
+
+Find out the names of all the files in the directory
+
+```{r}
+combined <- list.files(Data_dir)
+combined
+```
+
+We can now simply use `bind_rows` to combine these files if we were sure the dates are not overlapping, or we can use `join`.
+
+Read in the files, but you need to specifically identify the dates
+
+```{r}
+Period1_file <- read_csv(paste0(Data_dir,combined[1])) %>%
+  mutate(`Date and Time` = dmy_hm(`Date and Time`))
+Period2_file <- read_csv(paste0(Data_dir,combined[2])) %>%
+  mutate(`Date and Time` = dmy_hm(`Date and Time`))
+```
+
+Let's find out if the dates are overlapping
+
+```{r}
+
+
+P1_range <- range(Period1_file$`Date and Time`, na.rm =T)
+P2_range <- range(Period2_file$`Date and Time`, na.rm =T)
+
+P1_range
+P2_range
+```
+
+Clearly they are overlapping, so we will need to use join and join all columns. We will need to use `right_join()` because period2 has more data
+
+```{r}
+if (P1_range[1] < P2_range[1]){
+  combined_period <- left_join(Period1_file,Period2_file)
+} else {
+  combined_period <- right_join(Period1_file,Period2_file)
+}
+
+combined_period
+```
+
+## Plot the combined file
+
+```{r}
+p <- combined_period %>%
+  pivot_longer(3:ncol(combined_period),values_to = "value", 
+               names_to="variable") %>%
+  ggplot(aes(`Date and Time`, Event*0.2)) + 
+  geom_point(colour = "blue", alpha = 0.5) +
+  #geom_bar(stat="identity", fill = "darkblue") + 
+  geom_line(aes(`Date and Time`,value, colour =variable)) + 
+  theme_bw() + ylab("Rainfall (mm)") + 
+  scale_y_continuous(sec.axis = sec_axis(trans=~., name = "water level (m)"))
+p
+ggplotly(p)
+```

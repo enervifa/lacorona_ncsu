@@ -45,7 +45,7 @@ Set the data directory for this exercise
 
 ```{r}
 #Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223/flumes"
-Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T052323/flumes"
+Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223/flumes"
 ```
 
 ```{r read-files}
@@ -145,13 +145,12 @@ This also should work
 test_list <- process_file_list(file_info = File_info, 
                                out_path = paste0(Data_dir,"/processed"))
 length(test_list) #number of files
-test_list$names
 ```
 
 We can now plot each of the objects in the test_list
 
 ```{r}
-ggplotly(test_list[[8]])
+ggplotly(test_list[[10]])
 ```
 
 ```{r}

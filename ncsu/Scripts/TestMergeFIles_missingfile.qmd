@@ -10,7 +10,7 @@ This notebook demonstrates the different functions that have been developed to a
 
 Scripts and functions have been developed as part of FPTA 358 funded by INIA Uy.
 
-This document specifically focuses on the merging of different files originating from the rainfall and flume raw data. This will allow providing 6 minute, daily and monthly summaries.
+This document specifically focuses on the merging of different files originating from the rainfall and flume processed data, but in this case the ISCO level file is missing (there was no data). This notebook shows how to deal with that and still get a merged file to match other data.
 
 ## Packages
 
@@ -46,7 +46,7 @@ According to page 23 (Flumes data) in the "Field data analysis, La Corona NCSU" 
 We can now start testing the functions.
 
 ```{r}
-Data_dir = "../All_Raw_Data/Test_T4T52023_folder/T052323"
+Data_dir = "../All_Raw_Data/Test_T4T52023_folder/T042223"
 ```
 
 Read in two processed files (rainfall and flume data)
@@ -70,22 +70,33 @@ We have the following processed flume files
 flume_files
 ```
 
-Now read in two of the files (**change the file names manually**):
+So in this case the V1042223.csv (the ISCO nivel file) is missing
+
+Now try to read in the files (**change the file names manually**):
 
 -   rainfall
 
--   ISCO nivel (a .csv file)
-
-But other files are possible too
+-   ISCO nivel (a .csv file) (which is missing)
 
 Note that here we are using `read_flume_output2()` which is slightly different to `read_flume_output()` in `Functions_Flumes.R`
 
 ```{r}
-rain <- read_otip_file(name = "OTIP_r7052523.csv", 
+rain <- read_otip_file(name = "OTIP_r7042223.csv", 
                        path_to_file = paste0(Data_dir,"/rain/processed"))
 
-ISCOnivel <- read_flume_output2(name = "V1052523_processed.csv",
-                           path_to_file = paste0(Data_dir,"/Flumes/processed"))
+if(file.exists(paste0(Data_dir,"/Flumes/","V1042223_processed.csv"))) {
+  ISCOnivel <- read_flume_output2(name = "V1042223_processed.csv",
+                                path_to_file = paste0(Data_dir,
+                                                  "/Flumes/processed"))
+  
+} else {
+  message("file does not exist: now dummy df = ISCO_missing")
+  #create a dummy file
+  ISCO_missing <- tribble(
+    ~`Date and Time`, ~`Water Level, meters`,
+    rain$`Date and Time`[nrow(rain)], NA
+  )
+  }
 
 ```
 
@@ -99,7 +110,7 @@ Events are summed across summary times, while flume data would be taking the mea
 
 test_summary_rain <- sum_fun(rain)
 
-test_summary_flume <- sum_fun(ISCOnivel)
+test_summary_flume <- sum_fun(ISCO_missing)
 
 ```
 
@@ -203,7 +214,7 @@ ggplotly(p2)
 The next test is whether we can add a further file to the data. Reading in an isco velocity file
 
 ```{r}
-flume <- read_flume_output2(name = "v1052523csv_processed.csv",
+flume <- read_flume_output2(name = "v1042223csv_processed.csv",
                           path_to_file = paste0(Data_dir,"/Flumes/processed"))
 ```
 
@@ -254,7 +265,7 @@ This indicates that the Stevens well is probably full of sediment.
 This is an S1 or S2 file
 
 ```{r}
-flume_hobo20 <- read_flume_output2(name = "S1052523_processed.csv",
+flume_hobo20 <- read_flume_output2(name = "S1042223_processed.csv",
                           path_to_file = paste0(Data_dir,"/Flumes/processed"))
 ```
 
@@ -296,25 +307,6 @@ ggplotly(p4)
 
 ```
 
-```{r}
-# testing ft
-merged_four_df_test <- merged_four_df %>%
-  mutate(`ISCO Water Level, meters` = 0.3*`ISCO Water Level, meters`)
-p4a <- merged_four_df_test %>%
-  pivot_longer(3:ncol(merged_four_df),values_to = "value", 
-               names_to="variable") %>%
-  ggplot(aes(`Date and Time`, Event*0.2)) + 
-  geom_point(colour = "blue", alpha = 0.5) +
-  #geom_bar(stat="identity", fill = "darkblue") + 
-  geom_line(aes(`Date and Time`,value, colour =variable)) + 
-  theme_bw() + ylab("Rainfall (mm)") + 
-  scale_y_continuous(sec.axis = sec_axis(trans=~., name = "water level (m)"))
-p4a
-ggplotly(p4a)
-
-
-```
-
 ## Write out the data
 
 We can now write out the different data sets to files to be used later.
@@ -330,9 +322,8 @@ if (!file.exists("../All_Raw_Data/Test_T4T52023_folder/combined")) {
 split_dir <- strsplit(Data_dir,"/")
 file_indicator <- split_dir[[1]][length(split_dir[[1]])]
 
-write_csv(merged_four_df, paste0("../All_Raw_Data/Test_T4T52023_folder/combined/Rain_flumes_combinedV1",
+write_csv(merged_four_df, paste0("../combined/Rain_flumes_combinedV1",
                                  file_indicator,".csv"))
-
 
 ```
 

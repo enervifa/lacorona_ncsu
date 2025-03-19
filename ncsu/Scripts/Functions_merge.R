@@ -57,13 +57,13 @@ read_otip_file <- function(name, path_to_file="."){
 #'                    path_to_file = "../Flumes/processed")
 #' 
 #' @export
-read_flume_output <- function(name, path_to_file="."){
+read_flume_output2 <- function(name, path_to_file="."){
   #force date column to be character
   data_out <- read_csv(paste0(path_to_file,"/",name), col_types = cols("c","d"))
- #browser()
     # make sure dates are working
+  #browser()
   data_out <- data_out %>%
-    mutate(`Date and Time` = ymd_hms(`Date and Time`, tz = "America/Argentina/Buenos_Aires"))
+    mutate(`Date and Time` = ymd_hms(`Date and Time`, tz = "America/Argentina/Buenos_Aires")) 
   return(data_out)
 }
 
