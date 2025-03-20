@@ -24,18 +24,6 @@ library(plotly)
 # library(htmlwidgets)
 ```
 
-## Loading the developed functions
-
-The functions are stored in the scripts folder, the same folder as the code version of this file (the \*.qmd file).
-
-```{r loadfunctions}
-source("Functions_Flumes.R") 
-```
-
-## 
-
-We can now start testing the functions.
-
 Define the directory for the combined data files
 
 ```{r}
@@ -54,17 +42,13 @@ We can now simply use `bind_rows` to combine these files if we were sure the dat
 Read in the files, but you need to specifically identify the dates
 
 ```{r}
-Period1_file <- read_csv(paste0(Data_dir,combined[1])) %>%
-  mutate(`Date and Time` = dmy_hm(`Date and Time`))
-Period2_file <- read_csv(paste0(Data_dir,combined[2])) %>%
-  mutate(`Date and Time` = dmy_hm(`Date and Time`))
+Period1_file <- read_csv(paste0(Data_dir,combined[1]))
+Period2_file <- read_csv(paste0(Data_dir,combined[2]))
 ```
 
-Let's find out if the dates are overlapping
+Let's find out if the dates are overlapping, and which file has the longest series
 
 ```{r}
-
-
 P1_range <- range(Period1_file$`Date and Time`, na.rm =T)
 P2_range <- range(Period2_file$`Date and Time`, na.rm =T)
 
@@ -72,14 +56,46 @@ P1_range
 P2_range
 ```
 
-Clearly they are overlapping, so we will need to use join and join all columns. We will need to use `right_join()` because period2 has more data
+Clearly they are overlapping, so we will need to use some smart joining for the columns. But this might not always be needed.
+
+In this case we have from the data above: Period 1 is shorter, starts later and is missing the ISCO nivel data, which is the most likely case for files that are overlapping.
+
+We need to write a loop that:
+
+1.  tests whether the dates of the data frames are overlapping and which dataframe is the longest in date and time
+2.  If this is case
+    1.  cut a section from the longest dataframe that covers the dates from the shortest dataframe (Section B), and also save the section before (Section A) and the section after (Section C) from the longest dataframe
+    2.  replace the Event, Stevens and HOBO20 data from Section B with the same columns from the shorter data frame, assuming that the ISCO nivel data are already in Section B from the longer dataframe
+    3.  Join Section A with the filled in Section B and Section C
+3.  If the files are not overlapping:
+    1.  Join the two dataframes
+4.  If the files are overlapping, but P1 starts earlier than P2
+    1.  Only put P2 where P1 starts (left_join)
 
 ```{r}
-if (P1_range[1] < P2_range[1]){
-  combined_period <- left_join(Period1_file,Period2_file)
+# check if 1) first date P1 later than first date P2 and 
+# 2) the range of dates from P1 is shorter than P2
+if (P1_range[1] > P2_range[1] & 
+    (P1_range[2] - P1_range[1]) < (P2_range[2] - P2_range[1]) ){
+  SecA <- Period2_file %>% filter(`Date and Time` < P1_range[1])
+  SecB <- Period2_file %>% filter(`Date and Time` >= P1_range[1] &
+                                    `Date and Time` <= P1_range[2]) %>%
+    mutate(across(contains("Water Level"), 
+                  ~ coalesce(., Period1_file[[cur_column()]])))
+  SecC <- Period2_file %>% filter(`Date and Time` >= P1_range[2])
+  combined_period <- bind_rows(SecA, SecB, SecC)
+
 } else {
-  combined_period <- right_join(Period1_file,Period2_file)
+  # if P1 and P2 do not overlap
+  if (P1_range[1] < P2_range[1]) {
+      # simple bind_rows
+      combined_period <- bind_rows(Period1_file,Period2_file)
+  } else {
+    # if they overlap, but not one file longer than other
+      combined_period <- left_join(Period1_file,Period2_file)
+  }
 }
+    
 
 combined_period
 ```
