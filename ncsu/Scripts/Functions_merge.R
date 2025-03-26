@@ -113,3 +113,68 @@ sum_fun <- function(df, timestep = "6 min") {
   return(new_df_summary)
 }
 
+##################################################
+#' Merge two data frames with logger data 
+#' 
+#' Function to merge two data frames where one can overlap in dates
+#' data frames with logger data for two different periods
+#' @param P1_df input data frame for period 1
+#' @param P2_df input data frame for period 2
+#' @example 
+#' merged_df <- merge_periods(Period1_file, Period2_file)
+#' 
+#' @export
+merge_periods <- function(P1_df, P2_df) {
+  # find the date ranges for both data frames
+  P1_range <- range(P1_df$`Date and Time`, na.rm =T)
+  P2_range <- range(P2_df$`Date and Time`, na.rm =T)
+  # check if 1) first date P1 later than first date P2 and 
+  # 2) the range of dates from P1 is shorter than P2
+  if (P1_range[1] > P2_range[1] & 
+      (P1_range[2] - P1_range[1]) < (P2_range[2] - P2_range[1]) ){
+    SecA <- P2_df %>% filter(`Date and Time` < P1_range[1])
+    SecB <- P2_df %>% filter(`Date and Time` >= P1_range[1] &
+                                      `Date and Time` <= P1_range[2]) %>%
+      mutate(across(contains("Water Level"), 
+                    ~ coalesce(., P1_df[[cur_column()]]))) %>%
+      mutate(across(contains("Event"), 
+                    ~ coalesce(., P1_df[[cur_column()]])))
+    SecC <- P2_df %>% filter(`Date and Time` >= P1_range[2])
+    combined_p <- bind_rows(SecA, SecB, SecC)
+    
+  } else {
+    # if P1 and P2 do not overlap
+    if (P1_range[1] < P2_range[1]) {
+      # simple bind_rows
+      combined_p <- bind_rows(Period1_file,Period2_file)
+    } else {
+      # if they overlap, but not one file longer than other
+      combined_p <- left_join(Period1_file,Period2_file)
+    }
+  }
+  return(combined_p)
+}
+
+##################################################
+#' Make a plot of a merged file
+#' 
+#' Function to create a ggplot object for a merged data file 
+#' with multiple logger columns
+#' @param df input data 
+#' @example 
+#' p <- plot_merged(merged_df)
+#' 
+#' @export
+plot_merged <- function(df) {
+  p_out <- df %>%
+    pivot_longer(3:ncol(df),values_to = "value", 
+                 names_to="variable") %>%
+    ggplot(aes(`Date and Time`, Event*0.2)) + 
+    geom_point(colour = "blue", alpha = 0.5) +
+    #geom_bar(stat="identity", fill = "darkblue") + 
+    geom_line(aes(`Date and Time`,value, colour =variable)) + 
+    theme_bw() + ylab("Rainfall (mm)") + 
+    scale_y_continuous(sec.axis = sec_axis(trans=~., name = "water level (m)"))
+  return(p_out)
+  
+}

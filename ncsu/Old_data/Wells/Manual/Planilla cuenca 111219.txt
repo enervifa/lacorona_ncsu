@@ -1,0 +1,468 @@
+
+
+
+Water level
+
+Time
+
+      Name       Uruguayan  wells and Flumes                                           Data: 11/12/19
+
+
+
+
+
+
+Station
+Actual       
+mm
+Module  
+mm
+Actual 
+Module
+
+Flumes
+
+
+
+
+
+V1
+
+0.40
+13:24
+
+OBS.T= 87.5°F           Rule White:20           96% batería bien  cambio lápiz del 
+chart
+
+
+
+S 1
+
+
+13:30
+
+
+E1
+(auxiliar)
+
+
+13:29
+
+
+V2
+
+0.28
+14:15
+
+OBS.: T=77.3°F          Rule white:40            batería bien 96%           
+S2
+
+
+14:16
+
+
+E2
+(auxiliar)
+
+
+14:23
+
+
+Sampler
+
+
+
+
+# Smp
+Flow, m3/s
+Smp Flow, m3 
+Tot Flow, m3
+Comments
+SMP1
+25
+0.054
+13:27
+
+13
+0.004
+168.6
+15431
+Error have ocurred during in 
+the program..AJUSTE 
+MANUAL NIVEL DE LA 
+REGLA. 
+SMP2
+35
+0.044
+14:18
+
+16
+0.003
+1143
+18056
+AJUSTE MANUAL NIVEL 
+DE LA REGLA.
+Wells
+
+
+
+
+
+N1
+1670
+
+12:23
+
+
+N1.1
+660
+
+12:19
+
+Manual Well         
+N1.2
+2530
+
+12:15
+
+Manual Well     
+
+
+N1.3
+1860
+
+
+1200
+
+
+14:41
+
+
+Manual Well            
+N2
+1260
+
+14:49
+
+
+
+N3
+1250
+
+12:02
+
+
+N4
+1200
+
+14:58
+
+
+N5
+1900
+
+11:54
+
+
+N5.1
+1430
+
+11:56
+
+Manual Well                               
+N5.2
+Dry
+
+14:55
+
+Manual Well                 
+N5.3
+Dry
+
+14:56
+
+Manual Well                                  
+N6
+1680
+
+15:14
+
+
+Rain
+
+
+
+
+
+RV1
+
+
+
+
+Manual Rain Gauge nears the flume V1
+R2
+
+
+
+
+Manual Rain Gauge nears the road
+R3
+
+
+
+
+Manual Rain Gauge nears the road
+R4
+
+
+
+
+Manual Rain Gauge nears the house   
+R1
+
+
+14:18
+
+Manual Rain Gauge nears the flume V2. 
+Weather
+
+
+
+
+
+EM
+
+
+12:09
+
+ 
+WS
+
+
+12:13
+
+T= 81.1°F  -  H.R=68.1 % -  25.3 intensidad de luz.-70.5°F punto de Rocio-70% 
+bateria.
+
+
+
+
+
+
+
+
+
+
+Water level
+
+Time
+
+      Name       Uruguayan  wells and Flumes                                              Data:11/12/19
+Station
+Actual       
+mm
+Module  
+mm
+Actual 
+Module
+Comments
+Flumes
+
+
+
+
+Note : Actual stage equals 0.4 times Observed Stage
+V3
+
+2.22
+13:46
+
+Measuring vertical water:4 cm                            Rule white:60.   96% bateria
+Bar3
+
+
+13:51
+
+T=                                     Promedio 3 muestras agua:                    
+V3p
+
+
+13:50
+
+OBS.: T=         
+V4
+
+0.35
+10:05
+
+Measuring vertical water: 7 cm       Rule white: 230 .100%bateria.
+V4p
+
+
+09:56
+
+OBS. T=                            Promedio 3 muestras agua:           
+     Bar
+
+
+09:58
+
+T= 
+
+
+
+
+Sampler
+
+
+
+
+# Smp
+Flow, m3/s
+Smp Flow, m3 
+Tot Flow, m3
+Comments
+SMP3
+25/30
+0.058
+13:49
+
+11
+0.007
+677.5
+8120
+0.18mps-signal 0%
+Error have occurred durin in 
+the program.
+Correccion manual nivel de 
+la regla.
+SMP4
+45/53
+0.089
+09:52
+
+18
+0.011
+339.4
+14060
+Signal:1%-spectrum:97%. 
+0.37mps.correccion manual 
+nivel de la regla.
+Wells
+
+
+
+
+
+N7
+960
+
+10:56
+
+
+N8
+1940
+
+11:18
+
+Casita torcida,reparamos encierro.
+N8.1
+750
+
+11:25
+
+Manual Well         
+N8.2
+1720
+
+10:50
+
+Manual Well     
+
+
+N9
+Seco
+
+10:45
+
+
+N10
+1450
+
+11:35
+
+
+N10.1
+940
+
+11:33
+
+Manual Well                               
+N10.2
+2550
+
+10:35
+
+Manual Well                               
+N11
+1440
+
+10:43
+
+
+N12
+760
+
+11:40
+
+
+N12.1
+1610
+
+11:39
+
+Manual Well                            
+N12.2
+2000
+
+10:22
+
+Manual Well 
+N12.3
+1570
+
+10:28
+
+Manual Well                                  
+N13
+1740
+
+10:25
+
+
+Rain
+
+
+
+
+
+R5
+
+
+
+
+Manual Rain Gauge near trees
+R6
+
+
+
+
+Manual Rain Gauge near field
+R7
+
+
+09:54
+
+
+
+                                                                          Fecha de actualización: 16/01/18

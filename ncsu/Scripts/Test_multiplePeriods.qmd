@@ -81,7 +81,10 @@ if (P1_range[1] > P2_range[1] &
   SecB <- Period2_file %>% filter(`Date and Time` >= P1_range[1] &
                                     `Date and Time` <= P1_range[2]) %>%
     mutate(across(contains("Water Level"), 
+                  ~ coalesce(., Period1_file[[cur_column()]]))) %>%
+    mutate(across(contains("Event"), 
                   ~ coalesce(., Period1_file[[cur_column()]])))
+
   SecC <- Period2_file %>% filter(`Date and Time` >= P1_range[2])
   combined_period <- bind_rows(SecA, SecB, SecC)
 
@@ -100,18 +103,29 @@ if (P1_range[1] > P2_range[1] &
 combined_period
 ```
 
-## Plot the combined file
+## Function form of the above
+
+The above code is rewritten in a function called `merge_periods()` in the `Functions_merge.R` script
+
+```{r loadfunctions}
+source("Functions_merge.R") 
+
+```
+
+In this case the call would be simply:
 
 ```{r}
-p <- combined_period %>%
-  pivot_longer(3:ncol(combined_period),values_to = "value", 
-               names_to="variable") %>%
-  ggplot(aes(`Date and Time`, Event*0.2)) + 
-  geom_point(colour = "blue", alpha = 0.5) +
-  #geom_bar(stat="identity", fill = "darkblue") + 
-  geom_line(aes(`Date and Time`,value, colour =variable)) + 
-  theme_bw() + ylab("Rainfall (mm)") + 
-  scale_y_continuous(sec.axis = sec_axis(trans=~., name = "water level (m)"))
+combined_period <- merge_periods(Period1_file, Period2_file)
+```
+
+## Plot the combined file
+
+Using the `plot_merged()` function
+
+```{r}
+p <- plot_merged(combined_period)
 p
 ggplotly(p)
 ```
+
+## Write out the merged file
