@@ -27,13 +27,13 @@ library(plotly)
 Define the directory for the combined data files
 
 ```{r}
-Data_dir = "../All_Raw_Data/Test_T4T52023_folder/combined/"
+Data_dir = "../All_Raw_Data/Test_T4T52023_folder/"
 ```
 
 Find out the names of all the files in the directory
 
 ```{r}
-combined <- list.files(Data_dir)
+combined <- list.files(paste0(Data_dir,"instruments_combined/"))
 combined
 ```
 
@@ -42,8 +42,10 @@ We can now simply use `bind_rows` to combine these files if we were sure the dat
 Read in the files, but you need to specifically identify the dates
 
 ```{r}
-Period1_file <- read_csv(paste0(Data_dir,combined[1]))
-Period2_file <- read_csv(paste0(Data_dir,combined[2]))
+Period1_file <- read_csv(paste0(Data_dir,"instruments_combined/",
+combined[1]))
+Period2_file <- read_csv(paste0(Data_dir,"instruments_combined/",
+                                combined[2]))
 ```
 
 Let's find out if the dates are overlapping, and which file has the longest series
@@ -129,3 +131,22 @@ ggplotly(p)
 ```
 
 ## Write out the merged file
+
+We can now write the merged file to the 'periods_merged' folder
+
+```{r}
+
+if (!file.exists(paste0(Data_dir,"/periods_merged"))) {
+  dir.create(paste0(Data_dir,"/periods_merged"))
+}
+
+Period1 <- str_split(str_split(combined[1], "combined")[[1]][2],
+                     ".csv")[[1]][1]
+Period2 <- str_split(str_split(combined[2], "combined")[[1]][2],
+                     ".csv")[[1]][1]
+
+write_csv(combined_period, paste0(Data_dir,"/periods_merged/",
+                                 Period1,"_",Period2,".csv"))
+
+
+```

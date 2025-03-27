@@ -322,7 +322,7 @@ ggplotly(p4)
 
 We can now write out the different data sets to files to be used later.
 
-This will be stored in a folder called "combined".
+This will be stored in a folder called "instruments_combined".
 
 ```{r store-data}
 
