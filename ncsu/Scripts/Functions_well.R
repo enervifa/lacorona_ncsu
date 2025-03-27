@@ -17,7 +17,7 @@ require(tidyverse)
 #' @param plotit Switch whether or not to plot the output
 #' @example 
 #' df1 <- read_hobo_well(filename = "N1111219.csv", 
-#'                    input_dir = "../Wells/Automatic")
+#'                    input_dir = "../Wells")
 #' 
 #' @export
 read_hobo_well <- function(filename, input_dir = "."  , 
@@ -57,7 +57,7 @@ read_hobo_well <- function(filename, input_dir = "."  ,
 #' 
 #' Function to plot the well output
 #' @param df dataframe to plot
-#' @param baro switch (true/false) for baro fiel plotting
+#' @param baro switch (true/false) for baro file plotting
 #' @return a ggplot structure
 #' @example
 #' df1 <- read_hobo_well(filename = "N1111219.csv", 

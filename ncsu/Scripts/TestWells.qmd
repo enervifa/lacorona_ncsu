@@ -20,7 +20,7 @@ To be able to run this notebook, the following R packages should be available
 ```{r message = FALSE}
 library(tidyverse)
 library(plotly)
-library(readtext)
+#library(readtext)
 ```
 
 ## Loading the developed functions
@@ -31,20 +31,27 @@ The functions are stored in the scripts folder, the same folder as the code vers
 source("Functions_well.R") 
 ```
 
+Define the data directory
+
+```{r}
+#Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223"
+Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223"
+```
+
 ## Testing the functions
 
 Read in the files from the directory
 
 ```{r read-files}
 #getwd()
-well_files <- list.files("../wells/automatic", pattern = ".csv")
+well_files <- list.files(paste0(Data_dir,"/wells"), pattern = ".csv")
 ```
 
 Read in 1 file, the first two lines (hours) are deleted as they are often related to the sampling action
 
 ```{r readOnefile}
 
-test_well <- read_hobo_well(paste0("../wells/automatic/",well_files[1]), plotit = T)
+test_well <- read_hobo_well(paste0(Data_dir,"/wells/",well_files[1]), plotit = T)
 ggplotly(test_well$plot)
 ```
 
@@ -59,7 +66,7 @@ test_well$file
 Testing reading in the same files but plotting the 2 minute data abs pressure barom data
 
 ```{r}
-test_well_baro <- read_hobo_baro(paste0("../wells/automatic/",well_files[1]))
+test_well_baro <- read_hobo_baro(paste0(Data_dir,"/wells/",well_files[1]))
 ggplotly(test_well_baro$plot)
 ```
 
