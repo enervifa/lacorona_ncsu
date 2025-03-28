@@ -39,7 +39,7 @@ print(lsf.str())
 Define the Data directory
 
 ```{r}
-Data_dir = "..//All_Raw_Data/Test_T4T52023_folder/T052323/Weather"
+Data_dir = "..//All_Raw_Data/Test_T4T52023_folder/T042223/Weather"
 ```
 
 The weather/climate file does not actually contain any column names, so these need to be defined separately.
@@ -64,6 +64,8 @@ test_hobo$data
 ggplotly(test_hobo$plot)
 
 ```
+
+**Note that the rainfall in the \*.dat file is always 0**. The rainfall from the weather station is analysed in the test_rainfall.qmd file.
 
 And we can test the ET0 function
 

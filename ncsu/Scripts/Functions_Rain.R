@@ -105,7 +105,7 @@ diff_data <- function(data) {
 #'@param df a data frame/tibble as input
 #'@param ggtitle_text character, the text for the plot title
 #'
-#'@return a plotly object
+#'@return a ggplot object
 #'
 #'@examples 
 #'NA
@@ -123,7 +123,7 @@ first_quick_plot <- function(df, ggtitle_text) {
     theme_light() +  
     theme(legend.position = "top")
 
-  return(p1<-ggplotly(quickplot_rain))
+  return(quickplot_rain)
 }
 
 ###############################################
@@ -133,7 +133,7 @@ first_quick_plot <- function(df, ggtitle_text) {
 #'@param df a data frame/tibble as input
 #'@param ggtitle_text character, the text for the plot title
 #'
-#'@return a plotly object
+#'@return a ggplot object
 #'
 #'@examples 
 #'NA
@@ -149,9 +149,45 @@ second_quick_plot  <- function(df, ggtitle_text) {
     theme_light() +  # Use a minimal theme
     theme(legend.position = "top")
 
-  # Convert the plot to a Plotly object 
-  return(p2 <- ggplotly(quickplot_rain2))
+  # return plot object
+  return(quickplot_rain2)
 
+}
+
+
+###############################################
+#'third plotting function
+#'
+#'@param df a data frame/tibble as input
+#'@param ggtitle_text character, the text for the plot title
+#'
+#'@return a plotly object
+#'
+#'@examples 
+#'NA
+#'
+#'@export
+third_quick_plot  <- function(df, ggtitle_text) {
+  if(require(GGally) == F) {message("You need the GGally library for this plot")}
+  # group by hour
+  plot_df <- df %>%
+    group_by(Date_hour = lubridate::floor_date(Date, "1 hour"),filename) %>%
+    summarise(Hourly_Rainfall = sum(tipRainmm)) %>%
+    pivot_wider(names_from =  filename, 
+                values_from = Hourly_Rainfall) %>%
+    mutate(across(contains("OTIP"),~ ifelse(is.na(.x),0,.x)))
+  
+  quickplot_rain3 <- ggpairs(plot_df[,2:4],
+                             title = ggtitle_text,
+                             upper = list(continuous = "cor"),
+                             lower = list(continuous = "smooth")) +
+    theme_minimal() +
+    theme_light() +  # Use a minimal theme
+    theme(legend.position = "top")
+  
+  # Convert the plot to a Plotly object 
+  return(quickplot_rain3)
+  
 }
 
 
@@ -188,7 +224,16 @@ process_rain_data <- function(file_path, output_path_add = "processed"){
 #this function now works only with Date Time format to output OTIP tag files 
 #this files contain the individual tips
 
-# second version of the above function that automatically runs through all files
+#####################################################################
+#' second version of process rain data main function
+#' 
+#' second version of the above function that automatically runs through all files
+#' @param filepath
+#' @param output_path_add text string for an additional path variable to move processed files
+#' @example 
+#' process_rain_data_auto("../Rain")
+#' 
+#' @export
 process_rain_data_auto <- function(file_path, output_path_add = "processed"){
   #browser()
   # check if folder 'processed' exists
@@ -216,10 +261,16 @@ process_rain_data_auto <- function(file_path, output_path_add = "processed"){
 
 
 
-#################SECOND FUNCTION#############################
-#######################NOW QUICK CHECK PLOT###############################
-####### read the OIT files and calculate rain in mm, do a quick check plot
-
+#####################################################################
+#' read the OTIP files and calculate rain in mm
+#' 
+#' This sets up the list for the plotting
+#' @param path_to_processed path where the OTIP files are
+#' @param file_numbers optional, whether you want to read just a few files, defaults to "all"
+#' @example 
+#' create_data_list("../Rain/processed")
+#' 
+#' @export
 create_data_list <- function(path_to_processed, file_numbers = "all"){
   #write empty list to store the files 
   data2_list<-list()
@@ -260,18 +311,19 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
           mutate(tipRainmm = Event * 0.254)%>% # If "R1" or "R7" is in the file name
           filter(Date >= as.Date(last_date)) %>% # filter by latest date
           mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(Date,CumRainmm) 
+          select(Date,CumRainmm, tipRainmm) 
         if (data$Date[1] < as.Date(last_date)) {
           # write warning
           warning(paste(last_date, "used as start date, some data exists before this date"))
         }
       } else {
-        # Default transformation
+        # Default transformation for EM file
         data2 <- data %>%
           mutate(tipRainmm = Event * 0.1)%>%
           filter(Date >= as.Date(last_date)) %>% # filter by latest date
           mutate(CumRainmm = cumsum(tipRainmm))%>%
-          select(Date,CumRainmm)# Default transformation for other cases
+          # select Date, cumulative rain and the rain in mm
+          select(Date,CumRainmm, tipRainmm)# Default transformation for other cases
         if (data$Date[1] < as.Date(last_date)) {
           # write warning
           warning(paste(last_date, "used as start date, some data exists before this date"))
@@ -289,6 +341,16 @@ create_data_list <- function(path_to_processed, file_numbers = "all"){
     return(data2_list)
 }
 
+#####################################################################
+#' Create a check plot over time
+#' 
+#' This plots the cumulative rainfall over time
+#' @param data_list the input data list of dfs with rainfall data
+#' @param plot type of plot to produce, defaults to 1
+#' @example 
+#' check_plot(df_list)
+#' 
+#' @export
 ## Plot the data
 check_plot <- function(data_list, plot = 1) {
 
@@ -300,13 +362,19 @@ check_plot <- function(data_list, plot = 1) {
   # Create a title with the download data date
   filename1 <- result_df$filename[1]
   file_date <- substr(filename1, 8, nchar(filename1))
-  ggtitle_text <- paste("Rain Data Quick Check (File Number:", file_date, ")")
   
-  if (plot == 1) { # default
-    (plot1 <- first_quick_plot(result_df, ggtitle_text))
-  } else (plot2 <- second_quick_plot(result_df, ggtitle_text))
-
-  
-
+  if (plot == 1) {
+      ggtitle_text <- paste("Rain Data Quick Check Date:", file_date)
+      p <- first_quick_plot(result_df, ggtitle_text)
+      } else {
+        if (plot == 2) {
+          ggtitle_text <- paste("Rain Data Quick Check Date:", file_date)
+          p <- second_quick_plot(result_df, ggtitle_text)
+        } else { #plot == 3
+          ggtitle_text <- paste("Scatter plot for Date:" , file_date)
+          p <- third_quick_plot(result_df, ggtitle_text)
+        }
+      }
+  ggplotly(p)
 }
 
