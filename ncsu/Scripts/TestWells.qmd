@@ -20,7 +20,7 @@ To be able to run this notebook, the following R packages should be available
 ```{r message = FALSE}
 library(tidyverse)
 library(plotly)
-#library(readtext)
+library(readtext)
 ```
 
 ## Loading the developed functions
@@ -35,7 +35,7 @@ Define the data directory
 
 ```{r}
 #Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223"
-Data_dir ="..//All_Raw_Data/Test_T4T52023_folder/T042223"
+Data_dir ="../All_Raw_Data/Test_T4T52023_folder/T042223"
 ```
 
 ## Testing the functions
@@ -45,6 +45,7 @@ Read in the files from the directory
 ```{r read-files}
 #getwd()
 well_files <- list.files(paste0(Data_dir,"/wells"), pattern = ".csv")
+
 ```
 
 Read in 1 file, the first two lines (hours) are deleted as they are often related to the sampling action
@@ -66,15 +67,15 @@ test_well$file
 Testing reading in the same files but plotting the 2 minute data abs pressure barom data
 
 ```{r}
-test_well_baro <- read_hobo_baro(paste0(Data_dir,"/wells/",well_files[1]))
-ggplotly(test_well_baro$plot)
+test_baro <- read_hobo_baro(paste0(Data_dir,"/wells/",well_files[1]))
+ggplotly(test_baro$plot)
 ```
 
 ## Testing merging files
 
 ```{r}
 # baro dataframe first in the function
-test_merge <- Merge_baro_well(test_well_baro$file, test_well$file)
+test_merge <- Merge_baro_well(test_baro$file, test_well$file)
 ```
 
 test the plot, this is summarised hourly data
@@ -98,7 +99,7 @@ ggplotly(p2)
 
 ## Reading the manual records (Planillas)
 
-The first step is to convert the \*.doc files into *\**.docx files. We used [the freeware multidoc converter](http://www.multidoc-converter.com/en/index.html) which seems to work quite well.
+The first step is to convert the \*.doc files into *\**.docx files. We used [the freeware multidoc converter](http://www.multidoc-converter.com/en/index.html) which seems to work quite well. **But overall I don't think this is a sustainable solution**
 
 Then we can use the package `readtext` to read the files.
 
@@ -117,8 +118,8 @@ And finally the wrapper function: `read_manual_well(filename, input_dir = "../We
 Find dates
 
 ```{r}
-text_in_file <- readtext(paste("../Wells/Manual", 
-      "Planilla cuenca 111219.docx", sep ="/"), 
+text_in_file <- readtext(paste0(Data_dir,"/Wells/", 
+      "cuencas042223.docx"), 
       encoding = "utf8")$text
 dates <- find_dates(text_in_file, "Data")
 dates
@@ -127,8 +128,8 @@ dates
 Find section of data in the file
 
 ```{r}
-text_in_file <- readtext(paste("../Wells/Manual", 
-      "Planilla cuenca 111219.docx", sep ="/"), 
+text_in_file <- readtext(paste0(Data_dir,"/Wells/", 
+      "cuencas042223.docx"), 
       encoding = "utf8")$text
 
 well_data_section <- doc_data_find(text_in = text_in_file,
@@ -157,6 +158,9 @@ extract the section of data from the file
 And putting it all together
 
 ```{r}
-well_test <- read_manual_well("Planilla cuenca 111219.docx")
+well_test <- read_manual_well("cuencas042223.docx",
+                              input_dir = paste0(Data_dir,"/Wells/"))
 well_test
 ```
+
+In this case there is no manual well data
