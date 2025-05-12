@@ -1,0 +1,226 @@
+SAMPLER ID# 1237631012  12:14 10-JAN-25
+  Hardware:     A1  Software: 2.33
+*********** PROGRAM SETTINGS ***********
+     ----------
+   PROGRAM NAME:    
+    "FLUMEV3   "    
+ SITE DESCRIPTION:  
+    "FLUMEV3   "    
+     ----------
+   UNITS SELECTED:  
+     LENGTH: m      
+                    
+                    
+     ----------
+   UNITS SELECTED:  
+   FLOW RATE: m3s   
+  FLOW VOLUME: m3   
+   VELOCITY: mps    
+     ----------
+  AREA-VEL MODULE:  
+    DATA POINTS     
+    "DATA SET 1"    
+ 20 POINTS ENTERED  
+     ----------
+                    
+      2 MINUTE      
+   DATA INTERVAL    
+                    
+     ----------
+   1, 9.40 lit BTLS 
+ 7.2 m SUCTION LINE 
+ AUTO SUCTION HEAD  
+1 RINSES, 1 RETRIES 
+     ----------
+                    
+  ONE-PART PROGRAM  
+                    
+                    
+     ----------
+      PACING:       
+    FLOW, EVERY     
+      800.0 m3      
+NO SAMPLE AT START  
+     ----------
+     COMPOSITE:     
+                    
+  RUN CONTINUOUSLY  
+                    
+     ----------
+      VOLUME:       
+                    
+   100 ml SAMPLES   
+                    
+     ----------
+      ENABLE:       
+                    
+  NONE PROGRAMMED   
+                    
+     ----------
+      ENABLE:       
+ REPEATABLE ENABLE  
+NO SAMPLE AT DISABLE
+NO SAMPLE AT ENABLE 
+     ----------
+      ENABLE:       
+COUNTDOWN CONTINUES 
+   WHILE DISABLED   
+                    
+     ----------
+      ENABLE:       
+ 0 PAUSE & RESUMES  
+                    
+                    
+     ----------
+                    
+ NO DELAY TO START  
+                    
+                    
+     ----------
+     ----------
+     ----------
+  LIQUID DETECT ON  
+                    
+ QUICK VIEW/CHANGE  
+                    
+     ----------
+                    
+ TAKE MEASUREMENTS  
+  EVERY  1 MINUTES  
+                    
+     ----------
+  DUAL SAMPLER OFF  
+BTL FULL DETECT OFF 
+  TIMED BACKLIGHT   
+                    
+     ----------
+                    
+  EVENT MARK SENT   
+ DURING PUMP CYCLE  
+                    
+     ----------
+  PUMP COUNTS FOR   
+ EACH PURGE CYCLE:  
+   200 PRE-SAMPLE   
+  AUTO POST-SAMPLE  
+     ----------
+                    
+    NO PERIODIC     
+   SERIAL OUTPUT    
+                    
+     ----------
+    INTERROGATOR    
+     CONNECTOR      
+  POWER ALWAYS ON   
+                    
+     ----------
+     ----------
+     ----------
+                    
+   0.01 inch TIP    
+     RAIN GAUGE     
+                    
+     ----------
+  NO SDI-12 SONDE   
+                    
+AUTO SDI-12 SCAN OFF
+                    
+     ----------
+ I/O1= NONE         
+ I/O2= NONE         
+ I/O3= NONE         
+                    
+     ----------
+                    
+  0 ANALOG OUTPUTS  
+                    
+                    
+     ----------
+                    
+ NO EXTERNAL MODEM  
+                    
+                    
+     ----------
+                    
+      NO ALARM      
+   CONDITIONS SET   
+                    
+     ----------
+     ----------
+----------------------------------------
+ 
+ 
+ 
+SAMPLER ID# 1237631012  12:15 10-JAN-25
+  Hardware:     A1  Software: 2.33
+*********** SAMPLING RESULTS ***********
+   SITE: FLUMEV3   
+PROGRAM: FLUMEV3   
+Program Started at 12:55 TH 12-DEC-24
+Nominal Sample Volume =  100 ml
+                                   COUNT
+                                      TO
+SAMPLE  BOTTLE TIME  SOURCE ERROR LIQUID
+------- ------ ----      -- --    ------
+              12:55  PGM ENABLED
+------------- FR 13-DEC-24 -------------
+    1     1   18:10      F           684
+------------- SA 14-DEC-24 -------------
+    2     1   17:24      F           684
+    3     1   21:15      F           676
+    4     1   23:18      F           673
+------------- SU 15-DEC-24 -------------
+    5     1   05:52      F           665
+    6     1   22:43      F           667
+------------- MO 16-DEC-24 -------------
+    7     1   18:27      F           686
+------------- TU 17-DEC-24 -------------
+    8     1   17:10      F           689
+------------- WE 18-DEC-24 -------------
+    9     1   20:12      F           694
+------------- TH 19-DEC-24 -------------
+   10     1   22:04      F           675
+------------- FR 20-DEC-24 -------------
+   11     1   20:44      F           685
+------------- SA 21-DEC-24 -------------
+   12     1   17:53      F           669
+------------- SU 22-DEC-24 -------------
+   13     1   14:54      F           672
+------------- MO 23-DEC-24 -------------
+   14     1   06:22      F           666
+------------- TU 24-DEC-24 -------------
+   15     1   04:23      F           667
+------------- WE 25-DEC-24 -------------
+   16     1   01:12      F           671
+   17     1   23:44      F           672
+------------- TH 26-DEC-24 -------------
+   18     1   23:09      F           676
+------------- FR 27-DEC-24 -------------
+   19     1   21:13      F           682
+------------- SA 28-DEC-24 -------------
+   20     1   18:43      F           671
+------------- SU 29-DEC-24 -------------
+   21     1   18:50      F           684
+------------- MO 30-DEC-24 -------------
+   22     1   16:51      F           676
+------------- TU 31-DEC-24 -------------
+   23     1   13:38      F           652
+------------- WE 01-JAN-25 -------------
+   24     1   15:38      F           688
+------------- FR 03-JAN-25 -------------
+   25     1   03:43      F           672
+------------- SA 04-JAN-25 -------------
+   26     1   14:04      F           642
+------------- SU 05-JAN-25 -------------
+   27     1   22:17      F           677
+------------- TU 07-JAN-25 -------------
+   28     1   05:21      F           661
+------------- WE 08-JAN-25 -------------
+   29     1   19:53      F  NL         *
+------------- FR 10-JAN-25 -------------
+   30     1   01:55      F  NL         *
+
+ 
+   SOURCE F  ==> FLOW                
+    ERROR NL ==> NO LIQUID DETECTED! 
+----------------------------------------

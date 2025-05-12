@@ -1,0 +1,165 @@
+SAMPLER ID# 3687574585  11:36 10-JAN-25
+  Hardware: A0      Software: 2.01
+*********** PROGRAM SETTINGS ***********
+     ----------
+   PROGRAM NAME:    
+    "FLUMEV1   "    
+ SITE DESCRIPTION:  
+    "V1        "    
+     ----------
+   UNITS SELECTED:  
+     LENGTH: m      
+                    
+                    
+     ----------
+   UNITS SELECTED:  
+   FLOW RATE: m3s   
+  FLOW VOLUME: m3   
+                    
+     ----------
+  SUBMERGED PROBE:  
+    DATA POINTS     
+    "DATA SET 1"    
+ 21 POINTS ENTERED  
+     ----------
+                    
+      2 MINUTE      
+   DATA INTERVAL    
+                    
+     ----------
+   1, 9.30 lit BTLS 
+ 7.3 m SUCTION LINE 
+ AUTO SUCTION HEAD  
+1 RINSES, 1 RETRIES 
+     ----------
+                    
+  ONE-PART PROGRAM  
+                    
+                    
+     ----------
+      PACING:       
+    FLOW, EVERY     
+      1200  m3      
+NO SAMPLE AT START  
+     ----------
+     COMPOSITE:     
+                    
+  RUN CONTINUOUSLY  
+                    
+     ----------
+      VOLUME:       
+                    
+   100 ml SAMPLES   
+                    
+     ----------
+      ENABLE:       
+                    
+  NONE PROGRAMMED   
+                    
+     ----------
+      ENABLE:       
+ REPEATABLE ENABLE  
+NO SAMPLE AT DISABLE
+NO SAMPLE AT ENABLE 
+     ----------
+      ENABLE:       
+COUNTDOWN IS STOPPED
+   WHILE DISABLED   
+                    
+     ----------
+      ENABLE:       
+ 0 PAUSE & RESUMES  
+                    
+                    
+     ----------
+                    
+ NO DELAY TO START  
+                    
+                    
+     ----------
+     ----------
+     ----------
+  LIQUID DETECT ON  
+                    
+ QUICK VIEW/CHANGE  
+                    
+     ----------
+                    
+ TAKE MEASUREMENTS  
+  EVERY  1 MINUTES  
+                    
+     ----------
+  DUAL SAMPLER OFF  
+BTL FULL DETECT OFF 
+  TIMED BACKLIGHT   
+                    
+     ----------
+                    
+  EVENT MARK SENT   
+ DURING PUMP CYCLE  
+                    
+     ----------
+  PUMP COUNTS FOR   
+ EACH PURGE CYCLE:  
+   200 PRE-SAMPLE   
+  AUTO POST-SAMPLE  
+     ----------
+                    
+    NO PERIODIC     
+   SERIAL OUTPUT    
+                    
+     ----------
+    INTERROGATOR    
+     CONNECTOR      
+  POWER ALWAYS ON   
+                    
+     ----------
+     ----------
+     ----------
+                    
+   0.01 inch TIP    
+     RAIN GAUGE     
+                    
+     ----------
+  NO SDI-12 SONDE   
+                    
+AUTO SDI-12 SCAN OFF
+                    
+     ----------
+ I/O1= NONE         
+ I/O2= NONE         
+ I/O3= NONE         
+                    
+     ----------
+                    
+  0 ANALOG OUTPUTS  
+                    
+                    
+     ----------
+     ----------
+----------------------------------------
+ 
+ 
+ 
+SAMPLER ID# 3687574585  11:36 10-JAN-25
+  Hardware: A0      Software: 2.01
+*********** SAMPLING RESULTS ***********
+   SITE: V1        
+PROGRAM: FLUMEV1   
+Program Started at 11:56 TH 12-DEC-24
+Nominal Sample Volume =  100 ml
+                                   COUNT
+                                      TO
+SAMPLE  BOTTLE TIME  SOURCE ERROR LIQUID
+------- ------ ----      -- --    ------
+              11:56  PGM ENABLED
+              12:16  MANUAL PAUSE
+              12:16  MANUAL RESUME
+------------- SA 14-DEC-24 -------------
+    1     1   21:03      F           645
+------------- TH 02-JAN-25 -------------
+    2     1   05:27      F           645
+
+ 
+   SOURCE F  ==> FLOW                
+----------------------------------------

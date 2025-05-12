@@ -1,0 +1,1168 @@
+SAMPLER ID# 1237639932  09:07 10-JAN-25
+  Hardware:     A1  Software: 2.33
+*********** PROGRAM SETTINGS ***********
+     ----------
+   PROGRAM NAME:    
+    "FLUMEV4P1 "    
+ SITE DESCRIPTION:  
+    "FLUMEV4   "    
+     ----------
+   UNITS SELECTED:  
+     LENGTH: m      
+                    
+                    
+     ----------
+   UNITS SELECTED:  
+   FLOW RATE: m3s   
+  FLOW VOLUME: m3   
+   VELOCITY: mps    
+     ----------
+  AREA-VEL MODULE:  
+    DATA POINTS     
+    "DATA SET 1"    
+ 20 POINTS ENTERED  
+     ----------
+                    
+      2 MINUTE      
+   DATA INTERVAL    
+                    
+     ----------
+   1, 9.40 lit BTLS 
+ 7.2 m SUCTION LINE 
+ AUTO SUCTION HEAD  
+1 RINSES, 1 RETRIES 
+     ----------
+                    
+  ONE-PART PROGRAM  
+                    
+                    
+     ----------
+      PACING:       
+    FLOW, EVERY     
+      800.0 m3      
+NO SAMPLE AT START  
+     ----------
+     COMPOSITE:     
+                    
+  RUN CONTINUOUSLY  
+                    
+     ----------
+      VOLUME:       
+                    
+   100 ml SAMPLES   
+                    
+     ----------
+      ENABLE:       
+                    
+  NONE PROGRAMMED   
+                    
+     ----------
+      ENABLE:       
+ REPEATABLE ENABLE  
+NO SAMPLE AT DISABLE
+NO SAMPLE AT ENABLE 
+     ----------
+      ENABLE:       
+COUNTDOWN CONTINUES 
+   WHILE DISABLED   
+                    
+     ----------
+      ENABLE:       
+ 0 PAUSE & RESUMES  
+                    
+                    
+     ----------
+                    
+ NO DELAY TO START  
+                    
+                    
+     ----------
+     ----------
+     ----------
+  LIQUID DETECT ON  
+                    
+ QUICK VIEW/CHANGE  
+                    
+     ----------
+                    
+ TAKE MEASUREMENTS  
+  EVERY  1 MINUTES  
+                    
+     ----------
+  DUAL SAMPLER OFF  
+BTL FULL DETECT OFF 
+  TIMED BACKLIGHT   
+                    
+     ----------
+                    
+  EVENT MARK SENT   
+ DURING PUMP CYCLE  
+                    
+     ----------
+  PUMP COUNTS FOR   
+ EACH PURGE CYCLE:  
+   200 PRE-SAMPLE   
+  AUTO POST-SAMPLE  
+     ----------
+                    
+    NO PERIODIC     
+   SERIAL OUTPUT    
+                    
+     ----------
+    INTERROGATOR    
+     CONNECTOR      
+  POWER ALWAYS ON   
+                    
+     ----------
+     ----------
+     ----------
+                    
+   0.01 inch TIP    
+     RAIN GAUGE     
+                    
+     ----------
+  NO SDI-12 SONDE   
+                    
+AUTO SDI-12 SCAN OFF
+                    
+     ----------
+ I/O1= NONE         
+ I/O2= NONE         
+ I/O3= NONE         
+                    
+     ----------
+                    
+  0 ANALOG OUTPUTS  
+                    
+                    
+     ----------
+                    
+ NO EXTERNAL MODEM  
+                    
+                    
+     ----------
+                    
+      NO ALARM      
+   CONDITIONS SET   
+                    
+     ----------
+     ----------
+----------------------------------------
+ 
+ 
+ 
+SAMPLER ID# 1237639932  09:07 10-JAN-25
+  Hardware:     A1  Software: 2.33
+*********** SAMPLING RESULTS ***********
+   SITE: FLUMEV4   
+PROGRAM: FLUMEV4P1 
+Program Started at 09:34 TH 12-DEC-24
+Nominal Sample Volume =  100 ml
+                                   COUNT
+                                      TO
+SAMPLE  BOTTLE TIME  SOURCE ERROR LIQUID
+------- ------ ----      -- --    ------
+------------- FR 20-DEC-24 -------------
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:17  POWER FAILED!
+              06:17  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:18  POWER RESTORED
+              06:18  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:19  POWER RESTORED
+              06:19  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:20  POWER RESTORED
+              06:20  POWER FAILED!
+              06:21  POWER RESTORED
+              00:00  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:21  POWER FAILED!
+              06:21  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:22  POWER RESTORED
+              06:22  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:23  POWER RESTORED
+              06:23  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:24  POWER RESTORED
+              06:24  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:25  POWER RESTORED
+              06:25  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:26  POWER FAILED!
+              06:26  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:27  POWER RESTORED
+              06:27  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:28  POWER RESTORED
+              06:28  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:29  POWER RESTORED
+              06:29  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:30  POWER RESTORED
+              06:30  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:31  POWER RESTORED
+              06:31  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:32  POWER RESTORED
+              06:32  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:33  POWER FAILED!
+              06:33  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:34  POWER RESTORED
+              06:34  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:35  POWER FAILED!
+              06:35  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:36  POWER RESTORED
+              06:36  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:37  POWER FAILED!
+              06:37  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:38  POWER RESTORED
+              06:38  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:39  POWER FAILED!
+              06:39  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:40  POWER FAILED!
+              06:40  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:41  POWER FAILED!
+              06:41  POWER RESTORED
+              06:42  POWER FAILED!
+              06:42  POWER RESTORED
+              06:42  POWER FAILED!
+              06:42  POWER RESTORED
+              06:42  POWER FAILED!
+              06:42  POWER RESTORED
+              06:42  POWER FAILED!
+              06:42  POWER RESTORED
+              06:42  POWER FAILED!
+              06:42  POWER RESTORED
+              06:42  POWER FAILED!
+              06:43  POWER RESTORED
+              06:43  POWER FAILED!
+              06:43  POWER RESTORED
+              06:43  POWER FAILED!
+              06:43  POWER RESTORED
+              06:43  POWER FAILED!
+              06:43  POWER RESTORED
+              06:43  POWER FAILED!
+              06:43  POWER RESTORED
+              06:43  POWER FAILED!
+              06:44  POWER RESTORED
+              06:44  POWER FAILED!
+              06:44  POWER RESTORED
+              06:44  POWER FAILED!
+              06:44  POWER RESTORED
+              06:44  POWER FAILED!
+              06:44  POWER RESTORED
+              06:44  POWER FAILED!
+              06:44  POWER RESTORED
+              06:45  POWER FAILED!
+              06:45  POWER RESTORED
+              06:45  POWER FAILED!
+              06:45  POWER RESTORED
+              06:45  POWER FAILED!
+              06:45  POWER RESTORED
+              06:45  POWER FAILED!
+              06:45  POWER RESTORED
+              06:45  POWER FAILED!
+              06:45  POWER RESTORED
+              06:46  POWER FAILED!
+              06:46  POWER RESTORED
+              06:46  POWER FAILED!
+              06:46  POWER RESTORED
+              06:46  POWER FAILED!
+              06:46  POWER RESTORED
+              06:46  POWER FAILED!
+              06:46  POWER RESTORED
+              06:46  POWER FAILED!
+              06:47  POWER RESTORED
+              06:47  POWER FAILED!
+              06:47  POWER RESTORED
+              06:47  POWER FAILED!
+              06:47  POWER RESTORED
+              06:47  POWER FAILED!
+              06:47  POWER RESTORED
+              06:47  POWER FAILED!
+              06:47  POWER RESTORED
+              06:48  POWER FAILED!
+              06:48  POWER RESTORED
+              06:48  POWER FAILED!
+              06:48  POWER RESTORED
+              06:48  POWER FAILED!
+              06:48  POWER RESTORED
+              06:48  POWER FAILED!
+              06:48  POWER RESTORED
+              06:49  POWER FAILED!
+              06:49  POWER RESTORED
+              06:49  POWER FAILED!
+              06:49  POWER RESTORED
+              06:49  POWER FAILED!
+              06:49  POWER RESTORED
+              06:50  POWER FAILED!
+              06:50  POWER RESTORED
+              06:50  POWER FAILED!
+              06:50  POWER RESTORED
+              06:50  POWER FAILED!
+              06:50  POWER RESTORED
+              06:51  POWER FAILED!
+              06:51  POWER RESTORED
+              06:51  POWER FAILED!
+              06:51  POWER RESTORED
+              06:51  POWER FAILED!
+              06:51  POWER RESTORED
+              06:52  POWER FAILED!
+              06:52  POWER RESTORED
+    5     1   09:54      F  P          *
+              09:55  POWER FAILED!
+              09:55  POWER RESTORED
+              09:55  PGM STOPPED 20-DEC
+
+ 
+   SOURCE F  ==> FLOW                
+    ERROR P  ==> POWER FAILED!       
+----------------------------------------
